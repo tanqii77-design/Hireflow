@@ -10,6 +10,7 @@ import { jobs, candidates, matches } from "@/db/schema";
 import { eq, desc } from "drizzle-orm";
 import { Breadcrumb } from "@/components/breadcrumb";
 import { notFound } from "next/navigation";
+import { UserSearch } from "lucide-react";
 
 export default async function JobDetailPage({
   params,
@@ -63,7 +64,7 @@ export default async function JobDetailPage({
             className={`px-2.5 py-0.5 rounded-full text-xs font-medium ${
               job.status === "open"
                 ? "bg-green-50 text-green-700 border border-green-200"
-                : "bg-gray-100 text-gray-500 border border-gray-200"
+                : "bg-gray-100 text-gray-600 border border-gray-200"
             }`}
           >
             {job.status === "open" ? "招聘中" : "已关闭"}
@@ -71,12 +72,12 @@ export default async function JobDetailPage({
         </div>
 
         {job.description ? (
-          <p className="text-gray-500">{job.description}</p>
+          <p className="text-gray-600">{job.description}</p>
         ) : (
           <p className="text-gray-300 italic">暂无简介</p>
         )}
 
-        <p className="text-xs text-gray-400 mt-4">
+        <p className="text-xs text-gray-600 mt-4">
           创建于 {new Date(job.createdAt).toLocaleDateString("zh-CN")}
         </p>
 
@@ -93,10 +94,10 @@ export default async function JobDetailPage({
       {/* AI 匹配候选人 */}
       <div className="neu-card p-6 mb-6">
         <h2 className="font-semibold text-gray-700 mb-4">
-          🤖 AI 匹配候选人（{jobMatches.length}）
+          AI 匹配候选人（{jobMatches.length}）
         </h2>
         {jobMatches.length === 0 ? (
-          <p className="text-sm text-gray-400">
+          <p className="text-sm text-gray-600">
             还没有候选人匹配该职位
           </p>
         ) : (
@@ -143,7 +144,7 @@ export default async function JobDetailPage({
                   >
                     {m.recommendation}
                   </span>
-                  <span className="text-xs text-gray-400">
+                  <span className="text-xs text-gray-600">
                     {new Date(m.createdAt).toLocaleDateString("zh-CN")}
                   </span>
                 </div>
@@ -167,8 +168,8 @@ export default async function JobDetailPage({
           </Link>
         </div>
         {jobCandidates.length === 0 ? (
-          <div className="text-center py-10 text-gray-400">
-            <p className="text-3xl mb-2">👤</p>
+          <div className="text-center py-10 text-gray-600">
+            <UserSearch className="w-10 h-10 mx-auto text-gray-300 mb-2" aria-hidden="true" />
             <p className="text-sm">该职位暂无候选人</p>
             <Link
               href="/candidates/new"
@@ -191,7 +192,7 @@ export default async function JobDetailPage({
                   >
                     {c.name}
                   </Link>
-                  <span className="text-sm text-gray-400 ml-2">
+                  <span className="text-sm text-gray-600 ml-2">
                     {c.source || ""}
                   </span>
                 </div>
@@ -209,7 +210,7 @@ export default async function JobDetailPage({
                       ? "bg-purple-50 text-purple-700 border-purple-200"
                       : c.status === "hired"
                       ? "bg-emerald-50 text-emerald-700 border-emerald-200"
-                      : "bg-gray-100 text-gray-500 border-gray-200"
+                      : "bg-gray-100 text-gray-600 border-gray-200"
                   }`}
                 >
                   {c.status === "screening"

@@ -17,7 +17,7 @@ export function DeleteButton({ jobId }: { jobId: number }) {
 
       <button
         type="submit"
-        className="text-sm text-gray-400 hover:text-red-600 px-3 py-1.5 rounded-lg hover:bg-red-50 transition-colors"
+        className="text-sm text-gray-600 hover:text-red-600 px-3 py-1.5 rounded-lg hover:bg-red-50 transition-colors"
         onClick={(e) => {
           // 浏览器原生确认框：用户点"取消"就不提交
           if (!confirm("确认删除这个职位？此操作不可撤销。")) {

@@ -114,7 +114,7 @@ export function NewCandidateFlow({ error, jobs, hasApiKey }: Props) {
           <div className="flex items-center justify-between mb-6">
             <h1 className="text-2xl font-bold">新建候选人</h1>
             {hasApiKey && (
-              <button onClick={() => setShowManual(true)} className="text-sm text-gray-400 hover:text-gray-600">
+              <button onClick={() => setShowManual(true)} className="text-sm text-gray-600 hover:text-gray-600">
                 手动添加 →
               </button>
             )}
@@ -124,7 +124,7 @@ export function NewCandidateFlow({ error, jobs, hasApiKey }: Props) {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* 简历上传 */}
               <div className="neu-card p-6">
-                <h2 className="font-semibold text-gray-700 mb-4">📄 上传简历</h2>
+                <h2 className="font-semibold text-gray-700 mb-4">上传简历</h2>
                 <div className="mb-4">
                   <PdfUploader
                     onTextExtracted={(t) => setResume(t)}
@@ -143,14 +143,14 @@ export function NewCandidateFlow({ error, jobs, hasApiKey }: Props) {
                   disabled={analyzing || !resume.trim()}
                   className="neu-btn-primary bg-indigo-600 text-white w-full py-3 rounded-xl font-medium hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed mt-4"
                 >
-                  {analyzing ? "⏳ AI 分析中…" : "🤖 AI 智能分析"}
+                  {analyzing ? "正在分析…" : "智能分析"}
                 </button>
                 {aiError && <p className="text-xs text-red-500 mt-2">{aiError}</p>}
               </div>
 
               {/* 说明 */}
-              <div className="neu-card p-6 flex flex-col justify-center text-center text-gray-400">
-                <p className="text-5xl mb-4">🤖</p>
+              <div className="neu-card p-6 flex flex-col justify-center text-center text-gray-600">
+                <p className="text-5xl mb-4"></p>
                 <p className="text-lg font-medium text-gray-600 mb-2">AI 智能建档</p>
                 <p className="text-sm">上传简历后，AI 将自动：</p>
                 <ul className="text-sm mt-2 space-y-1">
@@ -158,11 +158,11 @@ export function NewCandidateFlow({ error, jobs, hasApiKey }: Props) {
                   <li>✅ 匹配所有招聘中职位</li>
                   <li>✅ 生成适配度分析</li>
                 </ul>
-                <p className="text-xs text-gray-400 mt-4">核对修改后一键创建候选人</p>
+                <p className="text-xs text-gray-600 mt-4">核对修改后一键创建候选人</p>
               </div>
             </div>
           ) : (
-            <div className="neu-card p-12 text-center text-gray-400">
+            <div className="neu-card p-12 text-center text-gray-600">
               {!hasApiKey && (
                 <>
                   <p className="text-lg mb-2">未配置 AI API Key</p>
@@ -189,7 +189,7 @@ export function NewCandidateFlow({ error, jobs, hasApiKey }: Props) {
         <div>
           <div className="flex items-center justify-between mb-6">
             <h1 className="text-2xl font-bold">核对信息并创建</h1>
-            <button onClick={() => setAnalysis(null)} className="text-sm text-gray-400 hover:text-gray-600">
+            <button onClick={() => setAnalysis(null)} className="text-sm text-gray-600 hover:text-gray-600">
               ← 返回修改简历
             </button>
           </div>
@@ -197,7 +197,7 @@ export function NewCandidateFlow({ error, jobs, hasApiKey }: Props) {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* 左：基本信息表单 */}
             <div className="neu-card p-6 space-y-4">
-              <h3 className="font-semibold text-gray-700">👤 基本信息</h3>
+              <h3 className="font-semibold text-gray-700"> 基本信息</h3>
               <input
                 value={name}
                 onChange={(e) => setName(e.target.value)}
@@ -245,14 +245,14 @@ export function NewCandidateFlow({ error, jobs, hasApiKey }: Props) {
                 disabled={creating || !name.trim()}
                 className="neu-btn-primary bg-indigo-600 text-white w-full py-3 rounded-xl font-medium hover:bg-indigo-700 disabled:opacity-50"
               >
-                {creating ? "⏳ 创建中…" : "✅ 确认创建"}
+                {creating ? "正在创建…" : "确认创建"}
               </button>
             </div>
 
             {/* 中+右：匹配结果 */}
             <div className="lg:col-span-2 neu-card p-6">
               <h3 className="font-semibold text-gray-700 mb-4">
-                🤖 AI 匹配结果（{analysis.matches.length} 个职位）
+                AI 匹配结果（{analysis.matches.length} 个职位）
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[600px] overflow-y-auto">
                 {analysis.matches.map((m) => (
@@ -288,9 +288,9 @@ export function NewCandidateFlow({ error, jobs, hasApiKey }: Props) {
                         />
                       </div>
                     </div>
-                    <div className="text-xs text-gray-500 space-y-0.5">
+                    <div className="text-xs text-gray-600 space-y-0.5">
                       {m.strengths[0] && <div>👍 {m.strengths[0]}</div>}
-                      {m.concerns[0] && <div>⚠️ {m.concerns[0]}</div>}
+                      {m.concerns[0] && <div>{m.concerns[0]}</div>}
                     </div>
                   </div>
                 ))}

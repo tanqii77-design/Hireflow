@@ -61,7 +61,7 @@ export function PdfPreview({ file, textPreview }: Props) {
     if (textPreview && textPreview.trim()) {
       return (
         <div className="bg-gray-50 rounded-lg p-4 max-h-[600px] overflow-y-auto">
-          <div className="text-xs text-gray-400 mb-2">文本预览</div>
+          <div className="text-xs text-gray-600 mb-2">文本预览</div>
           <pre className="text-sm text-gray-700 whitespace-pre-wrap font-sans leading-relaxed">
             {textPreview}
           </pre>
@@ -69,8 +69,8 @@ export function PdfPreview({ file, textPreview }: Props) {
       );
     }
     return (
-      <div className="bg-gray-50 rounded-lg p-8 text-center text-gray-400">
-        <p className="text-2xl mb-2">📄</p>
+      <div className="bg-gray-50 rounded-lg p-8 text-center text-gray-600">
+        <p className="text-2xl mb-2"></p>
         <p className="text-sm">上传 PDF 或粘贴简历后预览</p>
       </div>
     );
@@ -87,7 +87,7 @@ export function PdfPreview({ file, textPreview }: Props) {
 
   if (error) {
     return (
-      <div className="bg-gray-50 rounded-lg p-8 text-center text-gray-400">
+      <div className="bg-gray-50 rounded-lg p-8 text-center text-gray-600">
         <p className="text-sm">{error}</p>
       </div>
     );
@@ -98,7 +98,7 @@ export function PdfPreview({ file, textPreview }: Props) {
   return (
     <div className="bg-gray-50 rounded-lg p-4">
       <div className="flex items-center justify-between mb-3">
-        <span className="text-xs text-gray-400">
+        <span className="text-xs text-gray-600">
           PDF 预览 · {pages.length} 页
         </span>
         <div className="flex items-center gap-2">
@@ -109,7 +109,7 @@ export function PdfPreview({ file, textPreview }: Props) {
           >
             ← 上一页
           </button>
-          <span className="text-xs text-gray-500">
+          <span className="text-xs text-gray-600">
             {currentPage + 1} / {pages.length}
           </span>
           <button

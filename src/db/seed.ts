@@ -223,7 +223,7 @@ async function seed() {
   console.log(`  ✅ 匹配记录已填充`);
 
   // ===== 统计 =====
-  console.log("\n📊 数据统计:");
+  console.log("\n数据统计:");
   const tables = ["jobs", "candidates", "interviews", "feedback", "matches", "activity_logs"];
   for (const t of tables) {
     const r = db.execute
@@ -236,9 +236,9 @@ async function seed() {
   const pendingR = db.execute
     ? (await db.execute({ sql: "SELECT COUNT(*) as c FROM interviews WHERE status = 'completed' AND id NOT IN (SELECT interview_id FROM feedback)", args: [] })).rows[0]
     : db.prepare("SELECT COUNT(*) as c FROM interviews WHERE status = 'completed' AND id NOT IN (SELECT interview_id FROM feedback)").get();
-  console.log(`\n  ⚠️ 待反馈: ${pendingR.c} 条（王浩然第3轮）`);
+  console.log(`\n  待反馈: ${pendingR.c} 条（王浩然第3轮）`);
 
-  console.log("\n🎉 演示数据填充完成！");
+  console.log("\n 演示数据填充完成！");
 }
 
 seed().catch((e) => {

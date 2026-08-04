@@ -152,7 +152,7 @@ export function PdfUploader({ onTextExtracted, onFileChange }: Props) {
           </div>
         ) : fileName ? (
           <div className="text-sm text-gray-600 py-2">
-            📄 <span className="font-medium">{fileName}</span>
+             <span className="font-medium">{fileName}</span>
             <button
               type="button"
               onClick={(e) => {
@@ -160,7 +160,7 @@ export function PdfUploader({ onTextExtracted, onFileChange }: Props) {
                 setFileName("");
                 setStatus("");
               }}
-              className="ml-2 text-gray-400 hover:text-gray-600 text-xs"
+              className="ml-2 text-gray-600 hover:text-gray-600 text-xs"
             >
               移除
             </button>
@@ -168,9 +168,9 @@ export function PdfUploader({ onTextExtracted, onFileChange }: Props) {
         ) : (
           <div className="py-2">
             <span className="text-indigo-600 text-sm font-medium">
-              📎 上传 PDF 简历
+              上传 PDF 简历
             </span>
-            <span className="text-gray-400 text-sm"> 或拖拽到此处</span>
+            <span className="text-gray-600 text-sm"> 或拖拽到此处</span>
           </div>
         )}
       </div>

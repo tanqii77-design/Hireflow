@@ -125,7 +125,7 @@ async function migrate() {
   console.log(`\n✅ 云端数据库表列表:`);
   tables.rows.forEach((r: any) => console.log(`  📦 ${r.name}`));
 
-  console.log(`\n🎉 Turso 建表完成！`);
+  console.log(`\n Turso 建表完成！`);
 }
 
 migrate().catch((e) => {

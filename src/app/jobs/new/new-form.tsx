@@ -23,7 +23,7 @@ export function NewJobForm({ error }: { error?: string }) {
 
       {error && (
         <div className="bg-red-50 border border-red-200 text-red-700 rounded-lg px-4 py-3 mb-6 text-sm">
-          ⚠️ {error}
+          {error}
         </div>
       )}
 
@@ -48,7 +48,7 @@ export function NewJobForm({ error }: { error?: string }) {
             required
             autoFocus
           />
-          <p className="text-xs text-gray-400 mt-1">
+          <p className="text-xs text-gray-600 mt-1">
             必填，职位名称会显示在列表和候选人卡片中
           </p>
         </div>
@@ -68,7 +68,7 @@ export function NewJobForm({ error }: { error?: string }) {
             placeholder="简要描述这个职位的工作内容..."
             className="neu-inset w-full px-3 py-2 text-sm transition-shadow resize-none"
           />
-          <p className="text-xs text-gray-400 mt-1">选填，简要描述工作内容</p>
+          <p className="text-xs text-gray-600 mt-1">选填，简要描述工作内容</p>
         </div>
 
         {/* 按钮组 */}
