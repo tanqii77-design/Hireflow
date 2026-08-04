@@ -133,9 +133,6 @@ export default async function DashboardPage() {
       {/* ===== 空状态：新手引导 ===== */}
       {!hasData && <EmptyOnboarding />}
 
-      {/* ===== 有数据时：流程条 ===== */}
-      {hasData && <ProcessFlow />}
-
       {/* ===== 统计卡片 ===== */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
         <StatCard
@@ -163,6 +160,58 @@ export default async function DashboardPage() {
           color="bg-green-50 text-green-700"
         />
       </div>
+
+      {/* ===== 二级入口卡片 ===== */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+        <Link
+          href="/jobs"
+          className="group bg-white rounded-xl border border-gray-200 p-5 hover:shadow-lg hover:border-indigo-200 transition-all"
+        >
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-indigo-100 flex items-center justify-center text-xl">
+                💼
+              </div>
+              <div>
+                <h3 className="font-semibold text-gray-800">职位管理</h3>
+                <p className="text-sm text-gray-500">
+                  {openJobs.length} 个职位开放中
+                </p>
+              </div>
+            </div>
+            <span className="text-indigo-500 group-hover:translate-x-1 transition-transform text-lg">
+              →
+            </span>
+          </div>
+        </Link>
+
+        <Link
+          href="/candidates"
+          className="group bg-white rounded-xl border border-gray-200 p-5 hover:shadow-lg hover:border-indigo-200 transition-all"
+        >
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-indigo-100 flex items-center justify-center text-xl">
+                👥
+              </div>
+              <div>
+                <h3 className="font-semibold text-gray-800">候选人管理</h3>
+                <p className="text-sm text-gray-500">
+                  共 {recentCandidates.length} 位候选人
+                  {interviewingCandidates.length > 0 &&
+                    ` · ${interviewingCandidates.length} 位面试中`}
+                </p>
+              </div>
+            </div>
+            <span className="text-indigo-500 group-hover:translate-x-1 transition-transform text-lg">
+              →
+            </span>
+          </div>
+        </Link>
+      </div>
+
+      {/* ===== 有数据时：紧凑流程条 ===== */}
+      {hasData && <ProcessFlow />}
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* ===== 待反馈清单 ===== */}

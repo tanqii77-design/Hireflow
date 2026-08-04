@@ -96,43 +96,35 @@ export function EmptyOnboarding() {
 }
 
 /**
- * 有数据时的紧凑流程条
+ * 有数据时的紧凑流程条（一行小字 + 步骤编号）
  */
 export function ProcessFlow() {
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-4 mb-8">
-      <div className="text-xs font-medium text-gray-400 mb-3 uppercase tracking-wide">
-        招聘流程
-      </div>
-      <div className="flex items-center gap-1 flex-wrap">
-        {STEPS.map((step, i) => (
-          <div key={step.num} className="flex items-center gap-1">
-            {step.href ? (
-              <Link
-                href={step.href}
-                className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm hover:bg-indigo-50 transition-colors"
-              >
-                <span className="w-5 h-5 rounded-full bg-indigo-100 text-indigo-700 text-xs font-bold flex items-center justify-center">
-                  {step.num}
-                </span>
-                <span className="text-gray-700 font-medium hidden sm:inline">
-                  {step.title}
-                </span>
-              </Link>
-            ) : (
-              <span className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm text-gray-400">
-                <span className="w-5 h-5 rounded-full bg-gray-100 text-gray-400 text-xs font-bold flex items-center justify-center">
-                  {step.num}
-                </span>
-                <span className="hidden sm:inline">{step.title}</span>
+    <div className="flex items-center gap-1 text-xs text-gray-400 mb-6 flex-wrap">
+      <span className="mr-1">流程：</span>
+      {STEPS.map((step, i) => (
+        <span key={step.num} className="flex items-center gap-1">
+          {step.href ? (
+            <Link
+              href={step.href}
+              className="flex items-center gap-1 hover:text-indigo-600 transition-colors"
+            >
+              <span className="w-4 h-4 rounded-full bg-indigo-100 text-indigo-600 text-[10px] font-bold flex items-center justify-center">
+                {step.num}
               </span>
-            )}
-            {i < STEPS.length - 1 && (
-              <span className="text-gray-300 text-xs">→</span>
-            )}
-          </div>
-        ))}
-      </div>
+              <span>{step.title}</span>
+            </Link>
+          ) : (
+            <span className="flex items-center gap-1 text-gray-400">
+              <span className="w-4 h-4 rounded-full bg-gray-100 text-[10px] font-bold flex items-center justify-center">
+                {step.num}
+              </span>
+              <span>{step.title}</span>
+            </span>
+          )}
+          {i < STEPS.length - 1 && <span className="text-gray-300">→</span>}
+        </span>
+      ))}
     </div>
   );
 }
