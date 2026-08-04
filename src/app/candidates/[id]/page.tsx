@@ -243,31 +243,8 @@ export default async function CandidateDetailPage({
         </div>
       </div>
 
-      {/* 🤖 AI 智能匹配大卡片（横贯页面） */}
-      <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
-        <h2 className="font-semibold text-gray-700 mb-4">🤖 AI 智能匹配</h2>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* 左栏：简历 */}
-          <div>
-            <ResumeCard
-              candidateId={candidate.id}
-              resumeText={candidate.resumeText ?? null}
-            />
-          </div>
-          {/* 右栏：职位匹配 + 结果 */}
-          <div>
-            <MatchCard
-              candidateId={candidate.id}
-              hasResume={!!(candidate.resumeText?.trim())}
-              openJobs={openJobs}
-              matchRecords={matchRecordsWithTitle}
-            />
-          </div>
-        </div>
-      </div>
-
-      {/* 下方：面试时间线 + 推进状态 */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      {/* 面试时间线 + 推进状态 */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
         {/* 面试时间线 2/3 */}
         <div className="lg:col-span-2">
           <div className="bg-white rounded-xl border border-gray-200 p-6">
@@ -365,6 +342,82 @@ export default async function CandidateDetailPage({
             <p className="text-sm text-gray-400">已是最终状态</p>
           )}
         </div>
+      </div>
+
+      {/* 🤖 AI 智能匹配大卡片（三区布局） */}
+      <div className="bg-white rounded-xl border border-gray-200 p-6">
+        <h2 className="font-semibold text-gray-700 mb-4">🤖 AI 智能匹配</h2>
+
+        {/* 上排：简历（左）+ 职位匹配面板（右） */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+          <div>
+            <ResumeCard
+              candidateId={candidate.id}
+              resumeText={candidate.resumeText ?? null}
+            />
+          </div>
+          <div>
+            <MatchCard
+              candidateId={candidate.id}
+              hasResume={!!(candidate.resumeText?.trim())}
+              openJobs={openJobs}
+            />
+          </div>
+        </div>
+
+        {/* 下排：匹配结果横排卡片（全宽） */}
+        {matchRecordsWithTitle.length > 0 ? (
+          <div className="border-t border-gray-100 pt-4">
+            <h3 className="text-sm font-medium text-gray-500 mb-3">
+              匹配记录（{matchRecordsWithTitle.length}）
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+              {matchRecordsWithTitle.map((m: { id: number; jobId: number; jobTitle: string; score: number; strengths: string[]; concerns: string[]; recommendation: string; createdAt: string }) => (
+                <div key={m.id} className="border border-gray-200 rounded-lg p-3">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="font-medium text-sm text-gray-800">{m.jobTitle}</span>
+                    <span
+                      className={`px-2 py-0.5 rounded-full text-xs font-medium border ${
+                        m.recommendation === "推荐面试"
+                          ? "bg-green-50 text-green-700 border-green-200"
+                          : m.recommendation === "谨慎考虑"
+                          ? "bg-amber-50 text-amber-700 border-amber-200"
+                          : "bg-red-50 text-red-700 border-red-200"
+                      }`}
+                    >
+                      {m.recommendation}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="text-lg font-bold text-indigo-600">{m.score}</span>
+                    <span className="text-xs text-gray-400">/100</span>
+                    <div className="flex-1 bg-gray-100 rounded-full h-1.5">
+                      <div
+                        className={`h-1.5 rounded-full ${m.score >= 75 ? "bg-green-500" : m.score >= 50 ? "bg-amber-500" : "bg-red-500"}`}
+                        style={{ width: `${m.score}%` }}
+                      />
+                    </div>
+                  </div>
+                  <div className="text-xs text-gray-500 space-y-0.5">
+                    {m.strengths.length > 0 && (
+                      <div><span className="text-green-600">👍 {m.strengths[0]}</span></div>
+                    )}
+                    {m.concerns.length > 0 && (
+                      <div><span className="text-amber-600">⚠️ {m.concerns[0]}</span></div>
+                    )}
+                  </div>
+                  <div className="text-xs text-gray-400 mt-2">
+                    {new Date(m.createdAt).toLocaleString("zh-CN")}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : (
+          <div className="border-t border-gray-100 pt-4 text-center text-sm text-gray-400">
+            还没有匹配记录，选择职位后点击"⚡ 匹配"
+          </div>
+        )}
       </div>
     </div>
   );
