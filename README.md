@@ -2,7 +2,7 @@
 
 A lightweight AI-assisted interview scheduling & candidate screening tool for HR teams.
 
-Built for small-to-medium teams who want structured hiring workflows without the complexity of enterprise ATS systems.
+Built for small-to-medium teams who want structured hiring workflows without the complexity of enterprise ATS systems. Built from an HR workflow perspective — designed to keep interview feedback on track for small recruiting teams.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
@@ -22,6 +22,12 @@ Built for small-to-medium teams who want structured hiring workflows without the
 - **Status Workflow with Rules** — Auto-transition from screening to interviewing when scheduling; locked states (e.g., can't offer without completed interview + feedback)
 - **PDF Resume Support** — Upload PDF resumes with automatic text extraction (pdfjs) and OCR fallback for scanned documents (tesseract.js)
 - **Neumorphic UI** — Clean, soft-shadow card-based design with responsive layout
+
+---
+
+## Roadmap
+
+See [ROADMAP.md](ROADMAP.md) for the upcoming v2 plan — team collaboration with role-based access (Intern / HR / Manager), audit logs, AI enhancements (voice-to-text interview notes, OCR improvements), and integrations (calendar, email, Slack).
 
 ---
 
