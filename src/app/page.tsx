@@ -162,7 +162,7 @@ export default async function DashboardPage() {
       </div>
 
       {/* ===== 二级入口卡片 ===== */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         <Link
           href="/jobs"
           className="group bg-white rounded-xl border border-gray-200 p-5 hover:shadow-lg hover:border-indigo-200 transition-all"
@@ -200,6 +200,28 @@ export default async function DashboardPage() {
                   共 {recentCandidates.length} 位候选人
                   {interviewingCandidates.length > 0 &&
                     ` · ${interviewingCandidates.length} 位面试中`}
+                </p>
+              </div>
+            </div>
+            <span className="text-indigo-500 group-hover:translate-x-1 transition-transform text-lg">
+              →
+            </span>
+          </div>
+        </Link>
+
+        <Link
+          href="/match"
+          className="group bg-white rounded-xl border border-gray-200 p-5 hover:shadow-lg hover:border-indigo-200 transition-all"
+        >
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-indigo-100 flex items-center justify-center text-xl">
+                🤖
+              </div>
+              <div>
+                <h3 className="font-semibold text-gray-800">AI 适配度分析</h3>
+                <p className="text-sm text-gray-500">
+                  粘贴简历，AI 评估与职位的适配度
                 </p>
               </div>
             </div>
