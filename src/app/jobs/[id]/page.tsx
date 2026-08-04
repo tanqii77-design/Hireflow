@@ -6,8 +6,8 @@
  */
 import Link from "next/link";
 import db from "@/db";
-import { jobs, candidates } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import { jobs, candidates, matches } from "@/db/schema";
+import { eq, desc } from "drizzle-orm";
 import { Breadcrumb } from "@/components/breadcrumb";
 import { notFound } from "next/navigation";
 
@@ -29,6 +29,21 @@ export default async function JobDetailPage({
     .select()
     .from(candidates)
     .where(eq(candidates.jobId, jobId));
+
+  // 查该职位的匹配记录
+  const jobMatches = await db
+    .select()
+    .from(matches)
+    .where(eq(matches.jobId, jobId))
+    .orderBy(desc(matches.createdAt));
+
+  // 构建候选人 ID→姓名映射
+  const matchCandidateIds = [...new Set(jobMatches.map((m: typeof matches.$inferSelect) => m.candidateId))] as number[];
+  const matchCandidateMap = new Map<number, string>();
+  for (const cid of matchCandidateIds) {
+    const [c] = await db.select().from(candidates).where(eq(candidates.id, cid));
+    if (c) matchCandidateMap.set(cid, c.name);
+  }
 
   return (
     <div>
@@ -73,6 +88,69 @@ export default async function JobDetailPage({
             编辑职位
           </Link>
         </div>
+      </div>
+
+      {/* AI 匹配候选人 */}
+      <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+        <h2 className="font-semibold text-gray-700 mb-4">
+          🤖 AI 匹配候选人（{jobMatches.length}）
+        </h2>
+        {jobMatches.length === 0 ? (
+          <p className="text-sm text-gray-400">
+            还没有候选人匹配该职位
+          </p>
+        ) : (
+          <div className="divide-y divide-gray-50">
+            {jobMatches.map((m: typeof matches.$inferSelect) => (
+              <div
+                key={m.id}
+                className="flex items-center justify-between py-3"
+              >
+                <div className="flex items-center gap-4 flex-1">
+                  <Link
+                    href={`/candidates/${m.candidateId}`}
+                    className="font-medium text-gray-800 hover:text-indigo-600 transition-colors min-w-[80px]"
+                  >
+                    {matchCandidateMap.get(m.candidateId) || `候选人#${m.candidateId}`}
+                  </Link>
+                  <div className="flex items-center gap-2 flex-1">
+                    <span className="text-sm font-bold text-indigo-600 w-8">
+                      {m.score}
+                    </span>
+                    <div className="flex-1 bg-gray-100 rounded-full h-2 max-w-[120px]">
+                      <div
+                        className={`h-2 rounded-full ${
+                          m.score >= 75
+                            ? "bg-green-500"
+                            : m.score >= 50
+                            ? "bg-amber-500"
+                            : "bg-red-500"
+                        }`}
+                        style={{ width: `${m.score}%` }}
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <span
+                    className={`px-2 py-0.5 rounded-full text-xs font-medium border ${
+                      m.recommendation === "推荐面试"
+                        ? "bg-green-50 text-green-700 border-green-200"
+                        : m.recommendation === "谨慎考虑"
+                        ? "bg-amber-50 text-amber-700 border-amber-200"
+                        : "bg-red-50 text-red-700 border-red-200"
+                    }`}
+                  >
+                    {m.recommendation}
+                  </span>
+                  <span className="text-xs text-gray-400">
+                    {new Date(m.createdAt).toLocaleDateString("zh-CN")}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* 候选人列表 */}

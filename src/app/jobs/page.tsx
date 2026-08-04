@@ -6,8 +6,8 @@
  */
 import Link from "next/link";
 import db from "@/db";
-import { jobs, candidates, interviews, feedback } from "@/db/schema";
-import { desc, eq, and, inArray } from "drizzle-orm";
+import { jobs, candidates, interviews, feedback, matches } from "@/db/schema";
+import { desc, eq, inArray } from "drizzle-orm";
 import { DeleteButton } from "./delete-button";
 import { Breadcrumb } from "@/components/breadcrumb";
 
@@ -27,6 +27,7 @@ export default async function JobsPage({
   const allCandidates = await db.select().from(candidates);
   const allInterviews = await db.select().from(interviews);
   const allFeedback = await db.select().from(feedback);
+  const allMatches = await db.select().from(matches);
 
   // 为每个职位计算统计
   const fedInterviewIds = new Set(
@@ -57,12 +58,11 @@ export default async function JobsPage({
         iv.status === "completed" && !fedInterviewIds.has(iv.id)
     ).length;
 
-    return {
-      total: jobCandidates.length,
-      interviewing,
-      pendingFeedback,
-      hired,
-    };
+    const matched = allMatches.filter(
+      (m: typeof matches.$inferSelect) => m.jobId === jobId
+    ).length;
+
+    return { total: jobCandidates.length, interviewing, pendingFeedback, hired, matched };
   }
 
   return (
@@ -156,6 +156,11 @@ export default async function JobsPage({
                         {s.pendingFeedback > 0 && (
                           <span className="text-red-500">
                             待反馈 {s.pendingFeedback}
+                          </span>
+                        )}
+                        {s.matched > 0 && (
+                          <span className="text-purple-600">
+                            已匹配 {s.matched} 人
                           </span>
                         )}
                         {s.hired > 0 && (

@@ -9,9 +9,10 @@ import { useState, useRef, useCallback } from "react";
 
 interface Props {
   onTextExtracted: (text: string) => void;
+  onFileChange?: (file: File | null) => void;
 }
 
-export function PdfUploader({ onTextExtracted }: Props) {
+export function PdfUploader({ onTextExtracted, onFileChange }: Props) {
   const [status, setStatus] = useState("");   // "" | "extracting" | "ocr" | "done"
   const [fileName, setFileName] = useState("");
   const [error, setError] = useState("");
@@ -28,6 +29,7 @@ export function PdfUploader({ onTextExtracted }: Props) {
       setFileName(file.name);
       setStatus("extracting");
       setError("");
+      onFileChange?.(file);
 
       try {
         // ===== 1. pdfjs 文本提取 =====
