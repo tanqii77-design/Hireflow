@@ -5,12 +5,14 @@
  */
 import Link from "next/link";
 import db from "@/db";
-import { candidates, jobs, interviews } from "@/db/schema";
-import { eq, asc } from "drizzle-orm";
+import { candidates, jobs, interviews, feedback } from "@/db/schema";
+import { eq, asc, inArray } from "drizzle-orm";
 import { notFound } from "next/navigation";
 import { StatusAdvanceButton } from "./status-button";
 import { ScheduleForm } from "./schedule-form";
 import { InterviewButtons } from "./interview-buttons";
+import { FeedbackDisplay, type FeedbackData } from "./feedback-display";
+import { FeedbackForm } from "./feedback-form";
 
 export const dynamic = "force-dynamic";
 
@@ -44,6 +46,21 @@ export default async function CandidateDetailPage({
     .from(interviews)
     .where(eq(interviews.candidateId, cid))
     .orderBy(asc(interviews.roundNumber));
+
+  // 批量查所有面试的反馈（一条面试最多一条反馈）
+  const interviewIds = interviewList.map((iv: typeof interviews.$inferSelect) => iv.id);
+  const feedbackList =
+    interviewIds.length > 0
+      ? await db
+          .select()
+          .from(feedback)
+          .where(inArray(feedback.interviewId, interviewIds))
+      : [];
+
+  // 构建 interviewId → feedback 的映射，方便在时间线里快速查找
+  const feedbackMap = new Map<number, FeedbackData>(
+    feedbackList.map((fb: typeof feedback.$inferSelect) => [fb.interviewId, fb as FeedbackData])
+  );
 
   // 状态流程定义
   const statusFlow: Record<
@@ -178,6 +195,7 @@ export default async function CandidateDetailPage({
                   (iv: typeof interviews.$inferSelect) => {
                     const isCompleted = iv.status === "completed";
                     const isCancelled = iv.status === "cancelled";
+                    const fb: FeedbackData | undefined = feedbackMap.get(iv.id); // 该面试的反馈
 
                     return (
                       <div key={iv.id} className="relative">
@@ -211,7 +229,18 @@ export default async function CandidateDetailPage({
                             {/* 状态标签 */}
                             <InterviewStatusBadge status={iv.status} />
 
-                            {/* 操作按钮（仅 scheduled 状态） */}
+                            {/* 反馈状态指示 */}
+                            {fb ? (
+                              <span className="text-xs text-green-600">
+                                ✅ 已反馈
+                              </span>
+                            ) : isCompleted ? (
+                              <span className="text-xs text-amber-600">
+                                ⚠️ 待反馈
+                              </span>
+                            ) : null}
+
+                            {/* 操作按钮 */}
                             <InterviewButtons
                               interviewId={iv.id}
                               candidateId={candidate.id}
@@ -238,6 +267,29 @@ export default async function CandidateDetailPage({
                               <span className="text-gray-400">时间待定</span>
                             )}
                           </div>
+
+                          {/* 反馈区域 */}
+                          {fb ? (
+                            /* 有反馈 → 展示摘要 + 编辑入口 */
+                            <div>
+                              <FeedbackDisplay fb={fb} />
+                              <FeedbackForm
+                                interviewId={iv.id}
+                                candidateId={candidate.id}
+                                interviewer={iv.interviewer}
+                                existing={fb}
+                              />
+                            </div>
+                          ) : isCompleted ? (
+                            /* 已完成但没反馈 → 显示填写入口 */
+                            <div className="mt-2">
+                              <FeedbackForm
+                                interviewId={iv.id}
+                                candidateId={candidate.id}
+                                interviewer={iv.interviewer}
+                              />
+                            </div>
+                          ) : null}
                         </div>
                       </div>
                     );
