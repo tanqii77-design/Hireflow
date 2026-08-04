@@ -71,3 +71,18 @@ body {
   box-shadow: inset 3px 3px 7px rgba(99, 102, 241, 0.3),
               inset -3px -3px 7px rgba(255, 255, 255, 0.8);
 }
+
+/* ===== 键盘焦点样式 ===== */
+
+/* 全局：所有交互元素在键盘导航时显示清晰的焦点环 */
+*:focus-visible {
+  outline: 2px solid #6366f1;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* .neu-inset 默认 outline: none，键盘聚焦时必须给出可见提示 */
+.neu-inset:focus-visible {
+  outline: 2px solid #6366f1;
+  outline-offset: 2px;
+}

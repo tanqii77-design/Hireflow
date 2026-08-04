@@ -4,34 +4,10 @@ import Link from "next/link";
  * 4 步流程定义
  */
 const STEPS = [
-  {
-    num: 1,
-    title: "创建职位",
-    desc: "添加正在招聘的岗位",
-    icon: "💼",
-    href: "/jobs/new",
-  },
-  {
-    num: 2,
-    title: "添加候选人",
-    desc: "录入候选人基本信息",
-    icon: "👤",
-    href: "/candidates/new",
-  },
-  {
-    num: 3,
-    title: "安排面试",
-    desc: "指定面试官和时间",
-    icon: "📅",
-    href: null,
-  },
-  {
-    num: 4,
-    title: "填写反馈",
-    desc: "面试后提交结构化评价",
-    icon: "✍️",
-    href: null,
-  },
+  { num: 1, title: "创建职位", desc: "添加正在招聘的岗位", href: "/jobs/new" },
+  { num: 2, title: "添加候选人", desc: "录入候选人基本信息", href: "/candidates/new" },
+  { num: 3, title: "安排面试", desc: "指定面试官和时间", href: null },
+  { num: 4, title: "填写反馈", desc: "面试后提交结构化评价", href: null },
 ];
 
 /**
@@ -42,9 +18,9 @@ export function EmptyOnboarding() {
     <div className="bg-gradient-to-br from-indigo-50 to-white border border-indigo-100 rounded-2xl p-8 mb-8">
       <div className="text-center mb-8">
         <h2 className="text-xl font-bold text-gray-800 mb-2">
-          👋 欢迎使用 HireFlow
+          欢迎使用 HireFlow
         </h2>
-        <p className="text-sm text-gray-500">
+        <p className="text-sm text-gray-600">
           按照下面的流程，轻松管理面试全流程
         </p>
       </div>
@@ -57,18 +33,17 @@ export function EmptyOnboarding() {
               key={step.num}
               className={`neu-card p-4 text-center ${
                 step.href
-                  ? "hover:shadow-md hover:border-indigo-200 transition-all"
+                  ? "hover:shadow-md hover:border-indigo-200 transition-shadow"
                   : "opacity-70"
               }`}
             >
-              <div className="text-2xl mb-2">{step.icon}</div>
               <div className="text-xs font-bold text-indigo-600 mb-1">
                 第{step.num}步
               </div>
               <div className="text-sm font-semibold text-gray-800">
                 {step.title}
               </div>
-              <div className="text-xs text-gray-400 mt-1">{step.desc}</div>
+              <div className="text-xs text-gray-600 mt-1">{step.desc}</div>
             </div>
           );
 
@@ -100,7 +75,7 @@ export function EmptyOnboarding() {
  */
 export function ProcessFlow() {
   return (
-    <div className="flex items-center gap-1 text-xs text-gray-400 mb-6 flex-wrap">
+    <div className="flex items-center gap-1 text-xs text-gray-600 mb-6 flex-wrap">
       <span className="mr-1">流程：</span>
       {STEPS.map((step, i) => (
         <span key={step.num} className="flex items-center gap-1">
@@ -109,14 +84,14 @@ export function ProcessFlow() {
               href={step.href}
               className="flex items-center gap-1 hover:text-indigo-600 transition-colors"
             >
-              <span className="w-4 h-4 rounded-full bg-indigo-100 text-indigo-600 text-[10px] font-bold flex items-center justify-center">
+              <span className="w-6 h-6 rounded-full bg-indigo-100 text-indigo-600 text-xs font-bold flex items-center justify-center">
                 {step.num}
               </span>
               <span>{step.title}</span>
             </Link>
           ) : (
-            <span className="flex items-center gap-1 text-gray-400">
-              <span className="w-4 h-4 rounded-full bg-gray-100 text-[10px] font-bold flex items-center justify-center">
+            <span className="flex items-center gap-1 text-gray-600">
+              <span className="w-6 h-6 rounded-full bg-gray-100 text-xs font-bold flex items-center justify-center">
                 {step.num}
               </span>
               <span>{step.title}</span>

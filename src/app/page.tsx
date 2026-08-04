@@ -131,7 +131,7 @@ export default async function DashboardPage() {
   // ===== 渲染 =====
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-6">📊 汇总看板</h1>
+      <h1 className="text-2xl font-bold mb-6 text-balance">汇总看板</h1>
 
       {/* ===== 空状态：新手引导 ===== */}
       {!hasData && <EmptyOnboarding />}
@@ -139,7 +139,7 @@ export default async function DashboardPage() {
       {/* ===== 统计卡片 ===== */}
       {matchCount > 0 && (
         <p className="text-xs text-purple-600 mb-3">
-          🤖 已 AI 匹配 {matchCount} 次
+           已 AI 匹配 {matchCount} 次
         </p>
       )}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
@@ -173,16 +173,16 @@ export default async function DashboardPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
         <Link
           href="/jobs"
-          className="group neu-card p-5 hover:shadow-lg transition-all"
+          className="group neu-card p-5 hover:shadow-lg transition-shadow transition-transform"
         >
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-indigo-100 flex items-center justify-center text-xl">
+              <div className="w-10 h-10 rounded-xl bg-indigo-100 flex items-center justify-center text-xl" aria-hidden="true">
                 💼
               </div>
               <div>
                 <h3 className="font-semibold text-gray-800">职位管理</h3>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-gray-600">
                   {openJobs.length} 个职位开放中
                 </p>
               </div>
@@ -195,16 +195,16 @@ export default async function DashboardPage() {
 
         <Link
           href="/candidates"
-          className="group neu-card p-5 hover:shadow-lg transition-all"
+          className="group neu-card p-5 hover:shadow-lg transition-shadow transition-transform"
         >
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-indigo-100 flex items-center justify-center text-xl">
+              <div className="w-10 h-10 rounded-xl bg-indigo-100 flex items-center justify-center text-xl" aria-hidden="true">
                 👥
               </div>
               <div>
                 <h3 className="font-semibold text-gray-800">候选人管理</h3>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-gray-600">
                   共 {recentCandidates.length} 位候选人
                   {interviewingCandidates.length > 0 &&
                     ` · ${interviewingCandidates.length} 位面试中`}
@@ -225,12 +225,12 @@ export default async function DashboardPage() {
         {/* ===== 待反馈清单 ===== */}
         <div className="neu-card p-5">
           <h2 className="font-semibold text-gray-700 mb-4">
-            ⚠️ 待反馈（{pendingFeedback.length}）
+            待反馈（{pendingFeedback.length}）
           </h2>
           {pendingFeedback.length === 0 ? (
             <div className="text-center py-8">
-              <p className="text-2xl mb-2">🎉</p>
-              <p className="text-sm text-gray-500">全部反馈已收齐</p>
+              <p className="text-2xl mb-2"></p>
+              <p className="text-sm text-gray-600">全部反馈已收齐</p>
             </div>
           ) : (
             <div className="space-y-2 max-h-80 overflow-y-auto">
@@ -252,7 +252,7 @@ export default async function DashboardPage() {
                           欠反馈
                         </span>
                       </div>
-                      <div className="text-xs text-gray-400 mt-1">
+                      <div className="text-xs text-gray-600 mt-1">
                         第{iv.roundNumber}轮 · 面试官：{iv.interviewer}
                         {j && <span> · {j.title}</span>}
                       </div>
@@ -268,18 +268,18 @@ export default async function DashboardPage() {
         <div className="neu-card p-5">
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-semibold text-gray-700">
-              👥 最近候选人
+              <span aria-hidden="true">👥 </span>最近候选人
             </h2>
             <Link
               href="/candidates"
-              className="text-xs text-indigo-600 hover:text-indigo-700"
+              className="text-sm text-indigo-600 hover:text-indigo-700 px-2 py-1"
             >
               查看全部 →
             </Link>
           </div>
           {recentCandidates.length === 0 ? (
             <div className="text-center py-8">
-              <p className="text-sm text-gray-400">暂无候选人</p>
+              <p className="text-sm text-gray-600">暂无候选人</p>
               <Link
                 href="/candidates/new"
                 className="text-sm text-indigo-600 hover:text-indigo-700 mt-1 inline-block"
@@ -302,7 +302,7 @@ export default async function DashboardPage() {
                         <span className="font-medium text-gray-800 text-sm">
                           {c.name}
                         </span>
-                        <span className="text-xs text-gray-400 ml-2">
+                        <span className="text-xs text-gray-600 ml-2">
                           {j?.title || "—"}
                         </span>
                       </div>
