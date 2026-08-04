@@ -86,7 +86,7 @@ export default async function JobDetailPage({
           </p>
         ) : (
           <ul className="divide-y divide-gray-100">
-            {jobCandidates.map((c) => (
+            {jobCandidates.map((c: typeof candidates.$inferSelect) => (
               <li key={c.id} className="py-3">
                 <span className="font-medium text-gray-800">{c.name}</span>
                 <span className="text-sm text-gray-400 ml-3">{c.email}</span>

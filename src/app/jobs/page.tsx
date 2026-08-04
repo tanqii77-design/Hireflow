@@ -57,7 +57,7 @@ export default async function JobsPage() {
       ) : (
         /* 职位卡片列表 */
         <div className="grid gap-4">
-          {allJobs.map((job) => (
+          {allJobs.map((job: typeof jobs.$inferSelect) => (
             <div
               key={job.id}
               className="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-md transition-shadow"

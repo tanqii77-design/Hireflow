@@ -11,7 +11,7 @@ const isRemote = dbUrl.startsWith("libsql://");
 export default {
   schema: "./src/db/schema.ts",
   out: "./drizzle",
-  dialect: "sqlite",
+  dialect: isRemote ? "turso" : "sqlite",
   dbCredentials: isRemote
     ? {
         // 远程 Turso：url + authToken
