@@ -6,7 +6,8 @@
 import Link from "next/link";
 import db from "@/db";
 import { jobs, candidates, interviews, feedback } from "@/db/schema";
-import { eq, and, desc, inArray } from "drizzle-orm";
+import { eq, desc, inArray } from "drizzle-orm";
+import { EmptyOnboarding, ProcessFlow } from "@/components/onboarding";
 
 export const dynamic = "force-dynamic";
 
@@ -121,10 +122,19 @@ export default async function DashboardPage() {
     recentJobs.map((j: typeof jobs.$inferSelect) => [j.id, j])
   );
 
+  // 是否为空系统（无职位且无候选人）
+  const hasData = openJobs.length > 0 || recentCandidates.length > 0;
+
   // ===== 渲染 =====
   return (
     <div>
       <h1 className="text-2xl font-bold mb-6">📊 汇总看板</h1>
+
+      {/* ===== 空状态：新手引导 ===== */}
+      {!hasData && <EmptyOnboarding />}
+
+      {/* ===== 有数据时：流程条 ===== */}
+      {hasData && <ProcessFlow />}
 
       {/* ===== 统计卡片 ===== */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">

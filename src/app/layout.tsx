@@ -5,6 +5,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Link from "next/link";
+import { NavLinks } from "@/components/nav-links";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -43,27 +44,8 @@ export default function RootLayout({
               HireFlow
             </Link>
 
-            {/* 导航链接 */}
-            <div className="flex items-center gap-6 text-sm">
-              <Link
-                href="/"
-                className="text-gray-600 hover:text-gray-900 transition-colors"
-              >
-                看板
-              </Link>
-              <Link
-                href="/jobs"
-                className="text-gray-600 hover:text-gray-900 transition-colors"
-              >
-                职位
-              </Link>
-              <Link
-                href="/candidates"
-                className="text-gray-600 hover:text-gray-900 transition-colors"
-              >
-                候选人
-              </Link>
-            </div>
+            {/* 导航链接（Client Component，支持高亮） */}
+            <NavLinks />
           </div>
         </nav>
 
