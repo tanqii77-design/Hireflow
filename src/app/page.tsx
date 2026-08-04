@@ -4,6 +4,7 @@
  * 统计卡片 + 待反馈清单 + 候选人进度总览
  */
 import Link from "next/link";
+import { Briefcase, Users } from "lucide-react";
 import db from "@/db";
 import { jobs, candidates, interviews, feedback, matches } from "@/db/schema";
 import { eq, desc, inArray } from "drizzle-orm";
@@ -177,8 +178,8 @@ export default async function DashboardPage() {
         >
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-indigo-100 flex items-center justify-center text-xl" aria-hidden="true">
-                💼
+              <div className="w-10 h-10 rounded-xl bg-indigo-100 flex items-center justify-center" aria-hidden="true">
+                <Briefcase className="w-5 h-5 text-indigo-600" />
               </div>
               <div>
                 <h3 className="font-semibold text-gray-800">职位管理</h3>
@@ -199,8 +200,8 @@ export default async function DashboardPage() {
         >
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-indigo-100 flex items-center justify-center text-xl" aria-hidden="true">
-                👥
+              <div className="w-10 h-10 rounded-xl bg-indigo-100 flex items-center justify-center" aria-hidden="true">
+                <Users className="w-5 h-5 text-indigo-600" />
               </div>
               <div>
                 <h3 className="font-semibold text-gray-800">候选人管理</h3>
@@ -268,7 +269,7 @@ export default async function DashboardPage() {
         <div className="neu-card p-5">
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-semibold text-gray-700">
-              <span aria-hidden="true">👥 </span>最近候选人
+              <Users className="w-4 h-4 inline" aria-hidden="true" /> 最近候选人
             </h2>
             <Link
               href="/candidates"

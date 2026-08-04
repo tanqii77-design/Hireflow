@@ -6,6 +6,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { Breadcrumb } from "@/components/breadcrumb";
 import { PdfUploader } from "@/components/pdf-uploader";
+import { CheckCircle2, ThumbsUp } from "lucide-react";
 import { createCandidateWithAI, analyzeResume } from "../actions-ai";
 import { createCandidate } from "../actions";
 import type { CandidateInfo, MatchResult } from "@/lib/llm";
@@ -41,7 +42,7 @@ export function NewCandidateFlow({ error, jobs, hasApiKey }: Props) {
   const [email, setEmail] = useState("");
   const [summary, setSummary] = useState("");
   const [selectedJobId, setSelectedJobId] = useState<number>(jobs[0]?.id || 0);
-  const [source, setSource] = useState("AI 智能建档");
+  const [source, setSource] = useState("AI 自动建档");
   const [creating, setCreating] = useState(false);
 
   const [showManual, setShowManual] = useState(false);
@@ -143,7 +144,7 @@ export function NewCandidateFlow({ error, jobs, hasApiKey }: Props) {
                   disabled={analyzing || !resume.trim()}
                   className="neu-btn-primary bg-indigo-600 text-white w-full py-3 rounded-xl font-medium hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed mt-4"
                 >
-                  {analyzing ? "正在分析…" : "智能分析"}
+                  {analyzing ? "正在分析…" : "开始分析"}
                 </button>
                 {aiError && <p className="text-xs text-red-500 mt-2">{aiError}</p>}
               </div>
@@ -151,14 +152,14 @@ export function NewCandidateFlow({ error, jobs, hasApiKey }: Props) {
               {/* 说明 */}
               <div className="neu-card p-6 flex flex-col justify-center text-center text-gray-600">
                 <p className="text-5xl mb-4"></p>
-                <p className="text-lg font-medium text-gray-600 mb-2">AI 智能建档</p>
+                <p className="text-lg font-medium text-gray-600 mb-2">AI 自动建档</p>
                 <p className="text-sm">上传简历后，AI 将自动：</p>
                 <ul className="text-sm mt-2 space-y-1">
-                  <li>✅ 抽取姓名、电话、邮箱</li>
-                  <li>✅ 匹配所有招聘中职位</li>
-                  <li>✅ 生成适配度分析</li>
+                  <li><CheckCircle2 className="w-4 h-4 inline-block text-green-500 mr-1" aria-hidden="true" />抽取姓名、电话、邮箱</li>
+                  <li><CheckCircle2 className="w-4 h-4 inline-block text-green-500 mr-1" aria-hidden="true" />匹配所有招聘中职位</li>
+                  <li><CheckCircle2 className="w-4 h-4 inline-block text-green-500 mr-1" aria-hidden="true" />生成适配度分析</li>
                 </ul>
-                <p className="text-xs text-gray-600 mt-4">核对修改后一键创建候选人</p>
+                <p className="text-xs text-gray-600 mt-4">核对后创建候选人</p>
               </div>
             </div>
           ) : (
@@ -289,7 +290,7 @@ export function NewCandidateFlow({ error, jobs, hasApiKey }: Props) {
                       </div>
                     </div>
                     <div className="text-xs text-gray-600 space-y-0.5">
-                      {m.strengths[0] && <div>👍 {m.strengths[0]}</div>}
+                      {m.strengths[0] && <div><ThumbsUp className="w-4 h-4 inline-block mr-1" aria-hidden="true" />{m.strengths[0]}</div>}
                       {m.concerns[0] && <div>{m.concerns[0]}</div>}
                     </div>
                   </div>

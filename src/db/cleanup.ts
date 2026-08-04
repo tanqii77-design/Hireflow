@@ -18,12 +18,12 @@ async function cleanup() {
   if (dbUrl?.startsWith("libsql://")) {
     const { createClient } = require("@libsql/client");
     client = createClient({ url: dbUrl, authToken });
-    console.log(`🔗 连接云端: ${dbUrl}`);
+    console.log(`[连接] 连接云端: ${dbUrl}`);
   } else {
     const Database = require("better-sqlite3");
     const path = (dbUrl || "sqlite:./hireflow.db").replace("sqlite:", "");
     client = new Database(path);
-    console.log(`🔗 连接本地: ${path}`);
+    console.log(`[连接] 连接本地: ${path}`);
   }
 
   // 按外键依赖顺序删除（先子表后父表）
@@ -50,13 +50,13 @@ async function cleanup() {
       ? (await client.execute(`SELECT COUNT(*) as c FROM ${table}`)).rows[0].c
       : client.prepare(`SELECT COUNT(*) as c FROM ${table}`).get().c;
 
-    console.log(`  🧹 ${table}: ${verify} 条（已清空）`);
+    console.log(`  [清理] ${table}: ${verify} 条（已清空）`);
   }
 
-  console.log("\n✅ 所有表已清空，表结构保留");
+  console.log("\n[成功] 所有表已清空，表结构保留");
 }
 
 cleanup().catch((e) => {
-  console.error("❌ 清理失败:", e.message);
+  console.error("[失败] 清理失败:", e.message);
   process.exit(1);
 });

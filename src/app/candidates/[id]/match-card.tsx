@@ -4,6 +4,7 @@
  * 匹配结果展示已移到父组件
  */
 import { useState } from "react";
+import { Loader2 } from "lucide-react";
 import { matchCandidate } from "./match-actions";
 
 interface Job {
@@ -54,7 +55,7 @@ export function MatchCard({ candidateId, hasResume, openJobs }: Props) {
                 title={!hasResume ? "请先添加候选人简历" : ""}
               >
                 {matchingJobId === job.id ? (
-                  <span className="animate-spin inline-block">⏳</span>
+                  <Loader2 className="animate-spin w-4 h-4 inline-block" aria-hidden="true" />
                 ) : (
                   "匹配"
                 )}

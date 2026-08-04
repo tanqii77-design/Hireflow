@@ -3,6 +3,7 @@
  * 反馈表单 — 含 AI 面试评估（TXT 面试记录 → AI 生成草稿）
  */
 import { useState, useRef } from "react";
+import { Loader2 } from "lucide-react";
 import { submitFeedback } from "./feedback-actions";
 import { aiAssessInterview } from "./feedback-actions";
 
@@ -131,7 +132,7 @@ export function FeedbackForm({
               >
                 {aiLoading ? (
                   <span className="flex items-center gap-1">
-                    <span className="animate-spin">⏳</span> 分析中…
+                    <Loader2 className="animate-spin w-4 h-4 inline" aria-hidden="true" /> 分析中…
                   </span>
                 ) : (
                   "AI 生成反馈"

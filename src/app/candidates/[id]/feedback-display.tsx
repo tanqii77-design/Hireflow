@@ -2,6 +2,7 @@
  * 反馈摘要展示
  * 显示：星级评分、优缺点摘要、提交人
  */
+import { ThumbsUp } from "lucide-react";
 export interface FeedbackData {
   id: number;
   rating: number;
@@ -27,7 +28,7 @@ export function FeedbackDisplay({ fb }: { fb: FeedbackData }) {
       {/* 优点 */}
       {fb.strengths && (
         <div className="text-xs">
-          <span className="text-green-600 font-medium">👍 优点：</span>
+          <span className="text-green-600 font-medium"><ThumbsUp className="w-3.5 h-3.5 inline-block mr-1" aria-hidden="true" />优点：</span>
           <span className="text-gray-600">{fb.strengths}</span>
         </div>
       )}

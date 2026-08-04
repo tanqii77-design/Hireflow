@@ -5,6 +5,7 @@
  */
 import Link from "next/link";
 import db from "@/db";
+import { Briefcase, ThumbsUp } from "lucide-react";
 import { candidates, jobs, interviews, feedback, matches } from "@/db/schema";
 import { eq, asc, inArray, and, desc } from "drizzle-orm";
 import { notFound } from "next/navigation";
@@ -229,7 +230,7 @@ export default async function CandidateDetailPage({
           <span>{candidate.phone || "—"}</span>
           <span>{candidate.email || "—"}</span>
           <span>
-            <span aria-hidden="true">💼 </span>
+            <Briefcase className="w-4 h-4 inline" aria-hidden="true" />
             {job ? (
               <Link href={`/jobs/${job.id}`} className="text-indigo-600 hover:text-indigo-700">
                 {job.title}
@@ -409,7 +410,7 @@ export default async function CandidateDetailPage({
                   </div>
                   <div className="text-xs text-gray-600 space-y-0.5">
                     {m.strengths.length > 0 && (
-                      <div><span className="text-green-600">👍 {m.strengths[0]}</span></div>
+                      <div><span className="text-green-600"><ThumbsUp className="w-3.5 h-3.5 inline-block mr-1" aria-hidden="true" />{m.strengths[0]}</span></div>
                     )}
                     {m.concerns.length > 0 && (
                       <div><span className="text-amber-600">{m.concerns[0]}</span></div>

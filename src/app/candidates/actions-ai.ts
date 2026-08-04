@@ -1,6 +1,6 @@
 "use server";
 /**
- * AI 智能建档 Server Action
+ * AI 自动建档 Server Action
  * 上传简历 → AI 分析 → 创建候选人 + 保存 PDF + 批量匹配
  */
 import { revalidatePath } from "next/cache";
@@ -33,7 +33,7 @@ export async function createCandidateWithAI(formData: FormData) {
     phone: phone.trim(),
     email: email.trim(),
     jobId,
-    source: source.trim() || "AI 智能建档",
+    source: source.trim() || "AI 自动建档",
     resumeText: resumeText.trim(),
   };
 

@@ -18,14 +18,14 @@ const dbUrl = process.env.DATABASE_URL;
 const authToken = process.env.TURSO_AUTH_TOKEN;
 
 if (!dbUrl || !dbUrl.startsWith("libsql://")) {
-  console.log("❌ DATABASE_URL 不是 libsql:// 开头，跳过远程建表");
+  console.log("[失败] DATABASE_URL 不是 libsql:// 开头，跳过远程建表");
   process.exit(1);
 }
 
 const client = createClient({ url: dbUrl, authToken });
 
 async function migrate() {
-  console.log(`🚀 连接 Turso: ${dbUrl}`);
+  console.log(`[开始] 连接 Turso: ${dbUrl}`);
 
   // 执行建表 SQL（和 schema.ts 定义的表结构一致）
   const sql = `
@@ -111,9 +111,9 @@ async function migrate() {
         (e.message.includes("already exists") ||
           e.message.includes("duplicate column"))
       ) {
-        console.log(`  ⏭️  已存在，跳过`);
+        console.log(`  [跳过]  已存在，跳过`);
       } else {
-        console.log(`  ❌ 错误: ${e.message}`);
+        console.log(`  [失败] 错误: ${e.message}`);
       }
     }
   }
@@ -122,8 +122,8 @@ async function migrate() {
   const tables = await client.execute(
     "SELECT name FROM sqlite_master WHERE type='table' ORDER BY name"
   );
-  console.log(`\n✅ 云端数据库表列表:`);
-  tables.rows.forEach((r: any) => console.log(`  📦 ${r.name}`));
+  console.log(`\n[成功] 云端数据库表列表:`);
+  tables.rows.forEach((r: any) => console.log(`  ${r.name}`));
 
   console.log(`\n Turso 建表完成！`);
 }

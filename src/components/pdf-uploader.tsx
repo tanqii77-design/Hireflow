@@ -6,6 +6,7 @@
  * 全程浏览器本地，文件不上传服务器。
  */
 import { useState, useRef, useCallback } from "react";
+import { Loader2 } from "lucide-react";
 
 interface Props {
   onTextExtracted: (text: string) => void;
@@ -140,12 +141,12 @@ export function PdfUploader({ onTextExtracted, onFileChange }: Props) {
 
         {status === "extracting" ? (
           <div className="flex items-center justify-center gap-2 text-indigo-600 py-2">
-            <span className="animate-spin">⏳</span>
+            <Loader2 className="animate-spin w-4 h-4 inline" aria-hidden="true" />
             <span className="text-sm">正在提取简历文字…</span>
           </div>
         ) : status === "ocr" ? (
           <div className="flex items-center justify-center gap-2 text-indigo-600 py-2">
-            <span className="animate-spin">⏳</span>
+            <Loader2 className="animate-spin w-4 h-4 inline" aria-hidden="true" />
             <span className="text-sm">
               PDF 没有文字层，正在 OCR 识别（首次需下载语言包约 10MB）…
             </span>

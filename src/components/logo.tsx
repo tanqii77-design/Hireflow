@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 /**
- * HireFlow Logo — 人形 + 流程箭头极简组合
+ * HireFlow Logo — 粗对勾 + 圆角方形，传递"招聘决策"意象
  */
 export function Logo() {
   return (
@@ -15,12 +15,16 @@ export function Logo() {
         role="img"
       >
         <title>HireFlow Logo</title>
-        {/* 人形头部 */}
-        <circle cx="14" cy="8" r="4" fill="#6366f1" />
-        {/* 人形身体 */}
-        <path d="M5 24c0-4.5 4-8 9-8s9 3.5 9 8" stroke="#6366f1" strokeWidth="2.5" strokeLinecap="round" />
-        {/* 对勾标记 */}
-        <path d="M8 17l3 3 9-6" stroke="#818cf8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        {/* 圆角方形背景 */}
+        <rect x="2" y="2" width="24" height="24" rx="6" fill="#6366f1" />
+        {/* 粗对勾 */}
+        <path
+          d="M8 14.5l3.5 3.5 8.5-8"
+          stroke="white"
+          strokeWidth="3"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
       </svg>
       <span className="font-bold text-lg text-indigo-600 group-hover:text-indigo-700 transition-colors">
         HireFlow

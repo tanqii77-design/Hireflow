@@ -29,7 +29,7 @@ async function seed() {
       ? db.execute({ sql, args: params || [] }).then((r: any) => r.rows)
       : Promise.resolve(db.prepare(sql).all(...(params || [])));
 
-  console.log("🌱 开始填充演示数据...\n");
+  console.log("[开始] 开始填充演示数据...\n");
 
   // ===== 职位 =====
   const jobs = [
@@ -57,14 +57,14 @@ async function seed() {
   for (const j of jobs) {
     const rows = await query("SELECT id FROM jobs WHERE title = ?", [j.title]);
     if (rows.length > 0) {
-      console.log(`  ⏭️  职位已存在: ${j.title}`);
+      console.log(`  [跳过]  职位已存在: ${j.title}`);
       jobIds.push(rows[0].id);
     } else {
       const r = await db.execute
         ? (await db.execute({ sql: "INSERT INTO jobs (title, description, status) VALUES (?, ?, ?)", args: [j.title, j.description, j.status] }))
         : db.prepare("INSERT INTO jobs (title, description, status) VALUES (?, ?, ?)").run(j.title, j.description, j.status);
       const id = db.execute ? Number(r.lastInsertRowid) : Number((r as any).lastInsertRowid);
-      console.log(`  ✅ 创建职位: ${j.title} (id=${id})`);
+      console.log(`  [成功] 创建职位: ${j.title} (id=${id})`);
       jobIds.push(id);
     }
   }
@@ -107,7 +107,7 @@ async function seed() {
   for (const c of candidatesData) {
     const rows = await query("SELECT id FROM candidates WHERE name = ? AND email = ?", [c.name, c.email]);
     if (rows.length > 0) {
-      console.log(`  ⏭️  候选人已存在: ${c.name}`);
+      console.log(`  [跳过]  候选人已存在: ${c.name}`);
       candidateIds.push(rows[0].id);
     } else {
       const r = await db.execute
@@ -117,7 +117,7 @@ async function seed() {
           }))
         : db.prepare("INSERT INTO candidates (name, phone, email, job_id, source, status, resume_text) VALUES (?, ?, ?, ?, ?, ?, ?)").run(c.name, c.phone, c.email, c.jobId, c.source, c.status, c.resumeText);
       const id = db.execute ? Number(r.lastInsertRowid) : Number((r as any).lastInsertRowid);
-      console.log(`  ✅ 创建候选人: ${c.name} (id=${id}, ${c.status})`);
+      console.log(`  [成功] 创建候选人: ${c.name} (id=${id}, ${c.status})`);
       candidateIds.push(id);
     }
   }
@@ -191,7 +191,7 @@ async function seed() {
       db.prepare("INSERT INTO feedback (interview_id, rating, strengths, concerns, submitted_by) VALUES (?, ?, ?, ?, ?)").run(iv.id, fb.rating, fb.strengths, fb.concerns, fb.submittedBy);
     }
   }
-  console.log(`  ✅ 反馈已填充（王浩然第3轮故意留空作待反馈演示）`);
+  console.log(`  [成功] 反馈已填充（王浩然第3轮故意留空作待反馈演示）`);
 
   // ===== AI 匹配记录 =====
   const matchData = [
@@ -220,7 +220,7 @@ async function seed() {
       db.prepare("INSERT INTO matches (candidate_id, job_id, score, strengths, concerns, recommendation) VALUES (?, ?, ?, ?, ?, ?)").run(cid, m.jobId, m.score, JSON.stringify(m.strengths), JSON.stringify(m.concerns), m.recommendation);
     }
   }
-  console.log(`  ✅ 匹配记录已填充`);
+  console.log(`  [成功] 匹配记录已填充`);
 
   // ===== 统计 =====
   console.log("\n数据统计:");
@@ -242,6 +242,6 @@ async function seed() {
 }
 
 seed().catch((e) => {
-  console.error("❌ 填充失败:", e.message);
+  console.error("[失败] 填充失败:", e.message);
   process.exit(1);
 });

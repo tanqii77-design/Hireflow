@@ -3,6 +3,7 @@
  * PDF 预览 — 渲染 PDF 页面为图片，支持翻页
  */
 import { useState, useEffect, useCallback } from "react";
+import { Loader2 } from "lucide-react";
 
 interface Props {
   file: File | null;
@@ -79,7 +80,7 @@ export function PdfPreview({ file, textPreview }: Props) {
   if (loading) {
     return (
       <div className="bg-gray-50 rounded-lg p-8 text-center text-indigo-600">
-        <span className="animate-spin inline-block mr-2">⏳</span>
+        <Loader2 className="animate-spin w-4 h-4 inline-block mr-2" aria-hidden="true" />
         正在渲染预览…
       </div>
     );

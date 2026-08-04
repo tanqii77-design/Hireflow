@@ -3,6 +3,7 @@
  * 候选人简历卡片 — 查看/编辑简历 + PDF 上传 + PDF 原件预览
  */
 import { useState, useRef, useEffect } from "react";
+import { Loader2 } from "lucide-react";
 import { saveResume } from "./match-actions";
 import { PdfUploader } from "@/components/pdf-uploader";
 
@@ -155,7 +156,7 @@ function PdfPreviewModal({ pdfUrl, onClose }: { pdfUrl: string; onClose: () => v
           <button onClick={onClose} aria-label="关闭" className="text-gray-600 hover:text-gray-600 text-xl">×</button>
         </div>
 
-        {loading && <p className="text-center text-gray-600 py-8"><span className="animate-spin mr-2">⏳</span>加载中…</p>}
+        {loading && <p className="text-center text-gray-600 py-8"><Loader2 className="animate-spin w-4 h-4 inline mr-2" aria-hidden="true" />加载中…</p>}
         {error && <p className="text-center text-red-500 py-8">{error}</p>}
 
         {pages.length > 0 && (

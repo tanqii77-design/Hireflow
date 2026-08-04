@@ -1,5 +1,5 @@
 /**
- * 新建候选人页 — 两步流程（AI 智能建档 + 手动添加）
+ * 新建候选人页 — 两步流程（AI 自动建档 + 手动添加）
  */
 import db from "@/db";
 import { jobs } from "@/db/schema";

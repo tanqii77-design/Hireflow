@@ -21,7 +21,7 @@ export function EmptyOnboarding() {
           欢迎使用 HireFlow
         </h2>
         <p className="text-sm text-gray-600">
-          按照下面的流程，轻松管理面试全流程
+          按照下面的流程，管理面试全流程
         </p>
       </div>
 
