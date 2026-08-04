@@ -1,5 +1,72 @@
 @import "tailwindcss";
 
+:root {
+  --neu-bg: #e8ecf1;
+}
+
 body {
   font-family: var(--font-geist-sans), "PingFang SC", "Microsoft YaHei", sans-serif;
+  background: var(--neu-bg);
+}
+
+/* ===== 新拟物工具类 ===== */
+
+/* 凸起卡片 */
+.neu-card {
+  background: var(--neu-bg);
+  border-radius: 1rem;
+  box-shadow: 8px 8px 18px rgba(163, 177, 198, 0.45),
+              -8px -8px 18px rgba(255, 255, 255, 0.85);
+}
+
+/* 内凹输入框 */
+.neu-inset {
+  background: var(--neu-bg);
+  border-radius: 0.75rem;
+  border: none;
+  box-shadow: inset 4px 4px 8px rgba(163, 177, 198, 0.4),
+              inset -4px -4px 8px rgba(255, 255, 255, 0.85);
+  outline: none;
+  transition: box-shadow 0.2s;
+}
+
+.neu-inset:focus {
+  box-shadow: inset 4px 4px 8px rgba(163, 177, 198, 0.4),
+              inset -4px -4px 8px rgba(255, 255, 255, 0.85),
+              0 0 0 2px rgba(99, 102, 241, 0.3);
+}
+
+/* 凸起按钮（中性） */
+.neu-btn {
+  background: var(--neu-bg);
+  border-radius: 0.75rem;
+  box-shadow: 4px 4px 10px rgba(163, 177, 198, 0.4),
+              -4px -4px 10px rgba(255, 255, 255, 0.85);
+  transition: box-shadow 0.15s;
+}
+
+.neu-btn:hover {
+  box-shadow: 2px 2px 6px rgba(163, 177, 198, 0.35),
+              -2px -2px 6px rgba(255, 255, 255, 0.9);
+}
+
+.neu-btn:active {
+  box-shadow: inset 3px 3px 7px rgba(163, 177, 198, 0.4),
+              inset -3px -3px 7px rgba(255, 255, 255, 0.85);
+}
+
+/* 主操作按钮（indigo 填充 + 柔和阴影） */
+.neu-btn-primary {
+  box-shadow: 4px 4px 10px rgba(99, 102, 241, 0.25),
+              -4px -4px 10px rgba(255, 255, 255, 0.8);
+}
+
+.neu-btn-primary:hover {
+  box-shadow: 2px 2px 6px rgba(99, 102, 241, 0.2),
+              -2px -2px 6px rgba(255, 255, 255, 0.9);
+}
+
+.neu-btn-primary:active {
+  box-shadow: inset 3px 3px 7px rgba(99, 102, 241, 0.3),
+              inset -3px -3px 7px rgba(255, 255, 255, 0.8);
 }

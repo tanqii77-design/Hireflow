@@ -48,7 +48,7 @@ export function NewCandidateForm({
 
       <form
         action={createCandidate}
-        className="bg-white rounded-xl border border-gray-200 p-6 space-y-5"
+        className="neu-card p-6 space-y-5"
       >
         {/* 姓名 */}
         <div>
@@ -59,7 +59,7 @@ export function NewCandidateForm({
             type="text"
             name="name"
             placeholder="例：张三"
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+            className="neu-inset w-full px-3 py-2 text-sm"
             required
             autoFocus
           />
@@ -75,7 +75,7 @@ export function NewCandidateForm({
               type="text"
               name="phone"
               placeholder="例：13800138000"
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="neu-inset w-full px-3 py-2 text-sm"
             />
           </div>
           <div>
@@ -86,7 +86,7 @@ export function NewCandidateForm({
               type="email"
               name="email"
               placeholder="例：zhangsan@example.com"
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="neu-inset w-full px-3 py-2 text-sm"
             />
           </div>
         </div>
@@ -98,7 +98,7 @@ export function NewCandidateForm({
           </label>
           <select
             name="jobId"
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+            className="neu-inset w-full px-3 py-2 text-sm"
             required
           >
             <option value="">请选择职位</option>
@@ -117,7 +117,7 @@ export function NewCandidateForm({
           </label>
           <select
             name="source"
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+            className="neu-inset w-full px-3 py-2 text-sm"
           >
             <option value="">请选择</option>
             <option value="BOSS直聘">BOSS直聘</option>
@@ -133,7 +133,7 @@ export function NewCandidateForm({
         <div className="flex gap-3 pt-2">
           <button
             type="submit"
-            className="bg-indigo-600 text-white px-6 py-2.5 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors shadow-sm"
+            className="neu-btn-primary bg-indigo-600 text-white px-6 py-2.5 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors shadow-sm"
           >
             添加候选人
           </button>

@@ -55,7 +55,7 @@ export function EmptyOnboarding() {
           const card = (
             <div
               key={step.num}
-              className={`bg-white rounded-xl border border-gray-200 p-4 text-center ${
+              className={`neu-card p-4 text-center ${
                 step.href
                   ? "hover:shadow-md hover:border-indigo-200 transition-all"
                   : "opacity-70"

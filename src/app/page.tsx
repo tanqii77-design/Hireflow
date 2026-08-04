@@ -173,7 +173,7 @@ export default async function DashboardPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
         <Link
           href="/jobs"
-          className="group bg-white rounded-xl border border-gray-200 p-5 hover:shadow-lg hover:border-indigo-200 transition-all"
+          className="group neu-card p-5 hover:shadow-lg transition-all"
         >
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -195,7 +195,7 @@ export default async function DashboardPage() {
 
         <Link
           href="/candidates"
-          className="group bg-white rounded-xl border border-gray-200 p-5 hover:shadow-lg hover:border-indigo-200 transition-all"
+          className="group neu-card p-5 hover:shadow-lg transition-all"
         >
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -223,7 +223,7 @@ export default async function DashboardPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* ===== 待反馈清单 ===== */}
-        <div className="bg-white rounded-xl border border-gray-200 p-5">
+        <div className="neu-card p-5">
           <h2 className="font-semibold text-gray-700 mb-4">
             ⚠️ 待反馈（{pendingFeedback.length}）
           </h2>
@@ -265,7 +265,7 @@ export default async function DashboardPage() {
         </div>
 
         {/* ===== 最近候选人 ===== */}
-        <div className="bg-white rounded-xl border border-gray-200 p-5">
+        <div className="neu-card p-5">
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-semibold text-gray-700">
               👥 最近候选人

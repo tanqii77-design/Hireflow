@@ -40,7 +40,7 @@ export function EditJobForm({ job, error }: Props) {
 
       <form
         action={updateJob}
-        className="bg-white rounded-xl border border-gray-200 p-6 space-y-5"
+        className="neu-card p-6 space-y-5"
       >
         {/* 隐藏字段：告诉 Server Action 编辑的是哪个职位 */}
         <input type="hidden" name="id" value={job.id} />
@@ -58,7 +58,7 @@ export function EditJobForm({ job, error }: Props) {
             id="title"
             name="title"
             defaultValue={job.title}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-shadow"
+            className="neu-inset w-full px-3 py-2 text-sm transition-shadow"
             required
             autoFocus
           />
@@ -77,7 +77,7 @@ export function EditJobForm({ job, error }: Props) {
             name="description"
             rows={4}
             defaultValue={job.description || ""}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-shadow resize-none"
+            className="neu-inset w-full px-3 py-2 text-sm transition-shadow resize-none"
           />
         </div>
 
@@ -89,7 +89,7 @@ export function EditJobForm({ job, error }: Props) {
           <select
             name="status"
             defaultValue={job.status}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+            className="neu-inset w-full px-3 py-2 text-sm"
           >
             <option value="open">招聘中</option>
             <option value="closed">已关闭</option>
@@ -100,7 +100,7 @@ export function EditJobForm({ job, error }: Props) {
         <div className="flex gap-3 pt-2">
           <button
             type="submit"
-            className="bg-indigo-600 text-white px-6 py-2.5 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors shadow-sm"
+            className="neu-btn-primary bg-indigo-600 text-white px-6 py-2.5 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors shadow-sm"
           >
             保存修改
           </button>

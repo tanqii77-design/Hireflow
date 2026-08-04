@@ -29,7 +29,7 @@ export function NewJobForm({ error }: { error?: string }) {
 
       <form
         action={createJob}
-        className="bg-white rounded-xl border border-gray-200 p-6 space-y-5"
+        className="neu-card p-6 space-y-5"
       >
         {/* 职位名称 */}
         <div>
@@ -44,7 +44,7 @@ export function NewJobForm({ error }: { error?: string }) {
             id="title"
             name="title"
             placeholder="例：前端开发实习生"
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-shadow"
+            className="neu-inset w-full px-3 py-2 text-sm transition-shadow"
             required
             autoFocus
           />
@@ -66,7 +66,7 @@ export function NewJobForm({ error }: { error?: string }) {
             name="description"
             rows={4}
             placeholder="简要描述这个职位的工作内容..."
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-shadow resize-none"
+            className="neu-inset w-full px-3 py-2 text-sm transition-shadow resize-none"
           />
           <p className="text-xs text-gray-400 mt-1">选填，简要描述工作内容</p>
         </div>
@@ -75,7 +75,7 @@ export function NewJobForm({ error }: { error?: string }) {
         <div className="flex gap-3 pt-2">
           <button
             type="submit"
-            className="bg-indigo-600 text-white px-6 py-2.5 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors shadow-sm"
+            className="neu-btn-primary bg-indigo-600 text-white px-6 py-2.5 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors shadow-sm"
           >
             创建职位
           </button>

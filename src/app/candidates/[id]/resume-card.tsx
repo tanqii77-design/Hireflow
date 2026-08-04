@@ -55,7 +55,7 @@ export function ResumeCard({ candidateId, resumeText }: Props) {
           <div className="flex gap-2">
             <button
               type="submit"
-              className="bg-indigo-600 text-white px-4 py-1.5 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors"
+              className="neu-btn-primary bg-indigo-600 text-white px-4 py-1.5 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors"
             >
               保存
             </button>

@@ -87,7 +87,7 @@ export default async function JobsPage({
         </div>
         <Link
           href="/jobs/new"
-          className="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors shadow-sm"
+          className="neu-btn-primary bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors shadow-sm"
         >
           + 新建职位
         </Link>
@@ -105,7 +105,7 @@ export default async function JobsPage({
           </p>
           <Link
             href="/jobs/new"
-            className="bg-indigo-600 text-white px-6 py-2.5 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors inline-block"
+            className="neu-btn-primary bg-indigo-600 text-white px-6 py-2.5 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors inline-block"
           >
             创建第一个职位 →
           </Link>
@@ -116,7 +116,7 @@ export default async function JobsPage({
           {allJobs.map((job: typeof jobs.$inferSelect) => (
             <div
               key={job.id}
-              className="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-md transition-shadow"
+              className="neu-card p-5 hover:shadow-md transition-shadow"
             >
               <div className="flex items-start justify-between gap-4">
                 {/* 左侧：职位信息 */}

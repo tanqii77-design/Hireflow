@@ -30,20 +30,19 @@ export default function RootLayout({
   return (
     <html lang="zh-CN">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-50 text-gray-900 min-h-screen`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased text-gray-900 min-h-screen`}
       >
         {/* 顶部导航栏 */}
-        <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
-          <div className="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between">
-            {/* 品牌名 */}
+        <div className="sticky top-0 z-50 py-3">
+          <nav className="neu-card mx-auto max-w-6xl px-4 h-14 flex items-center justify-between rounded-xl">
             <Link
               href="/"
               className="font-bold text-lg text-indigo-600 hover:text-indigo-700 transition-colors"
             >
               HireFlow
             </Link>
-          </div>
-        </nav>
+          </nav>
+        </div>
 
         {/* 页面内容 */}
         <main className="max-w-6xl mx-auto px-4 py-6">{children}</main>

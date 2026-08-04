@@ -209,7 +209,7 @@ export default async function CandidateDetailPage({
       )}
 
       {/* 个人信息卡（紧凑） */}
-      <div className="bg-white rounded-xl border border-gray-200 p-5 mb-6">
+      <div className="neu-card p-5 mb-6">
         <div className="flex items-center justify-between mb-3">
           <h1 className="text-2xl font-bold">{candidate.name}</h1>
           <span
@@ -247,7 +247,7 @@ export default async function CandidateDetailPage({
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
         {/* 面试时间线 2/3 */}
         <div className="lg:col-span-2">
-          <div className="bg-white rounded-xl border border-gray-200 p-6">
+          <div className="neu-card p-6">
             <div className="flex items-center justify-between mb-4">
               <h2 className="font-semibold text-gray-700">
                 📅 面试记录（{interviewList.length}）
@@ -320,7 +320,7 @@ export default async function CandidateDetailPage({
         </div>
 
         {/* 推进状态 1/3 */}
-        <div className="bg-white rounded-xl border border-gray-200 p-5 h-fit">
+        <div className="neu-card p-5 h-fit">
           <h3 className="font-semibold text-gray-700 mb-3">推进状态</h3>
           {currentFlow.next.length > 0 ? (
             <div className="space-y-3">
@@ -345,7 +345,7 @@ export default async function CandidateDetailPage({
       </div>
 
       {/* 🤖 AI 智能匹配大卡片（三区布局） */}
-      <div className="bg-white rounded-xl border border-gray-200 p-6">
+      <div className="neu-card p-6">
         <h2 className="font-semibold text-gray-700 mb-4">🤖 AI 智能匹配</h2>
 
         {/* 上排：简历（左）+ 职位匹配面板（右） */}

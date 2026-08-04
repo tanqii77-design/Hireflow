@@ -56,7 +56,7 @@ export default async function JobDetailPage({
       />
 
       {/* 职位头部信息 */}
-      <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+      <div className="neu-card p-6 mb-6">
         <div className="flex items-center gap-3 mb-3">
           <h1 className="text-2xl font-bold">{job.title}</h1>
           <span
@@ -91,7 +91,7 @@ export default async function JobDetailPage({
       </div>
 
       {/* AI 匹配候选人 */}
-      <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+      <div className="neu-card p-6 mb-6">
         <h2 className="font-semibold text-gray-700 mb-4">
           🤖 AI 匹配候选人（{jobMatches.length}）
         </h2>
@@ -154,7 +154,7 @@ export default async function JobDetailPage({
       </div>
 
       {/* 候选人列表 */}
-      <div className="bg-white rounded-xl border border-gray-200 p-6">
+      <div className="neu-card p-6">
         <div className="flex items-center justify-between mb-4">
           <h2 className="font-semibold text-gray-700">
             候选人（{jobCandidates.length}）

@@ -63,7 +63,7 @@ export default async function CandidatesPage({
         </div>
         <Link
           href="/candidates/new"
-          className="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors shadow-sm"
+          className="neu-btn-primary bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors shadow-sm"
         >
           + 添加候选人
         </Link>
@@ -146,14 +146,14 @@ export default async function CandidatesPage({
           {allCandidates.length === 0 && (
             <Link
               href="/candidates/new"
-              className="bg-indigo-600 text-white px-6 py-2.5 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors inline-block"
+              className="neu-btn-primary bg-indigo-600 text-white px-6 py-2.5 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors inline-block"
             >
               添加第一个候选人 →
             </Link>
           )}
         </div>
       ) : (
-        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+        <div className="neu-card overflow-hidden">
           <table className="w-full">
             <thead>
               <tr className="border-b border-gray-100 bg-gray-50/50">

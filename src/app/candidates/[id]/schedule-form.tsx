@@ -16,7 +16,7 @@ export function ScheduleForm({ candidateId }: { candidateId: number }) {
       {/* 触发按钮 */}
       <button
         onClick={() => setOpen(true)}
-        className="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors shadow-sm"
+        className="neu-btn-primary bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors shadow-sm"
       >
         + 安排面试
       </button>
@@ -39,7 +39,7 @@ export function ScheduleForm({ candidateId }: { candidateId: number }) {
               type="text"
               name="interviewer"
               placeholder="例：张经理"
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="neu-inset w-full px-3 py-2 text-sm"
               required
               autoFocus
             />
@@ -52,7 +52,7 @@ export function ScheduleForm({ candidateId }: { candidateId: number }) {
             </label>
             <select
               name="interviewType"
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="neu-inset w-full px-3 py-2 text-sm"
             >
               <option value="video">🎥 视频面试</option>
               <option value="phone">📞 电话面试</option>
@@ -68,7 +68,7 @@ export function ScheduleForm({ candidateId }: { candidateId: number }) {
             <input
               type="datetime-local"
               name="scheduledAt"
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="neu-inset w-full px-3 py-2 text-sm"
             />
             <p className="text-xs text-gray-400 mt-1">选填，不填表示时间待定</p>
           </div>

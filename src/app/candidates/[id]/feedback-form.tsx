@@ -171,7 +171,7 @@ export function FeedbackForm({
               onChange={(e) => setStrengths(e.target.value)}
               rows={2}
               placeholder="候选人的优势、亮点..."
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none"
+              className="neu-inset w-full px-3 py-2 text-sm resize-none"
             />
           </div>
 
@@ -183,7 +183,7 @@ export function FeedbackForm({
               onChange={(e) => setConcerns(e.target.value)}
               rows={2}
               placeholder="需要关注的问题、风险..."
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none"
+              className="neu-inset w-full px-3 py-2 text-sm resize-none"
             />
           </div>
 
@@ -195,7 +195,7 @@ export function FeedbackForm({
               name="submittedBy"
               defaultValue={existing?.submittedBy || interviewer}
               placeholder="填写你的名字"
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="neu-inset w-full px-3 py-2 text-sm"
             />
           </div>
 
