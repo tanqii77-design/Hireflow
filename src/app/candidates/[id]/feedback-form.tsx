@@ -1,12 +1,10 @@
 "use client";
 /**
- * 反馈表单 — Client Component
- *
- * 点击"填写反馈"或"编辑反馈" → 展开表单
- * 星级评分由用户点击选择，5 颗星可交互
+ * 反馈表单 — 含 AI 面试评估（TXT 面试记录 → AI 生成草稿）
  */
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { submitFeedback } from "./feedback-actions";
+import { aiAssessInterview } from "./feedback-actions";
 
 interface Props {
   interviewId: number;
@@ -20,6 +18,7 @@ interface Props {
     conclusion: string;
     submittedBy: string | null;
   } | null;
+  hasApiKey?: boolean;
 }
 
 export function FeedbackForm({
@@ -27,10 +26,42 @@ export function FeedbackForm({
   candidateId,
   interviewer,
   existing,
+  hasApiKey = false,
 }: Props) {
   const [open, setOpen] = useState(false);
   const [rating, setRating] = useState(existing?.rating || 0);
+  const [strengths, setStrengths] = useState(existing?.strengths || "");
+  const [concerns, setConcerns] = useState(existing?.concerns || "");
+  const [conclusion, setConclusion] = useState(existing?.conclusion || "pending");
+
+  // AI 评估状态
+  const [txtFile, setTxtFile] = useState<File | null>(null);
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiError, setAiError] = useState("");
+  const fileRef = useRef<HTMLInputElement>(null);
   const isEdit = !!existing;
+
+  async function handleAIAssess() {
+    if (!txtFile) return;
+    setAiLoading(true);
+    setAiError("");
+    try {
+      const text = await txtFile.text();
+      if (!text.trim()) { setAiError("文件内容为空"); return; }
+
+      const result = await aiAssessInterview(interviewId, text.trim());
+
+      // 自动填入表单
+      setRating(result.rating);
+      setStrengths(result.strengths);
+      setConcerns(result.concerns);
+      setConclusion(result.conclusion);
+    } catch (e: any) {
+      setAiError(e.message || "AI 分析失败");
+    } finally {
+      setAiLoading(false);
+    }
+  }
 
   return (
     <div>
@@ -54,19 +85,65 @@ export function FeedbackForm({
             <span className="text-sm font-medium text-gray-700">
               {isEdit ? "编辑反馈" : "填写反馈"}
             </span>
-            <button
-              type="button"
-              onClick={() => setOpen(false)}
-              className="text-gray-400 hover:text-gray-600 text-sm"
-            >
+            <button type="button" onClick={() => setOpen(false)} className="text-gray-400 hover:text-gray-600 text-sm">
               收起
             </button>
           </div>
 
           <input type="hidden" name="interviewId" value={interviewId} />
           <input type="hidden" name="candidateId" value={candidateId} />
-          {/* 评分通过 hidden input 提交 */}
           <input type="hidden" name="rating" value={rating} />
+          <input type="hidden" name="strengths" value={strengths} />
+          <input type="hidden" name="concerns" value={concerns} />
+          <input type="hidden" name="conclusion" value={conclusion} />
+
+          {/* 🤖 AI 面试评估 */}
+          <div className="bg-indigo-50 rounded-lg border border-indigo-200 p-3">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-sm font-medium text-indigo-700">🤖 AI 面试评估</span>
+              {!hasApiKey && (
+                <span className="text-xs text-gray-400">（未配置 API Key，可手动填写）</span>
+              )}
+            </div>
+            <p className="text-xs text-gray-500 mb-2">
+              上传面试记录（TXT），AI 将结合岗位 JD 生成反馈草稿，提交前请人工核对
+            </p>
+
+            <div className="flex items-center gap-2">
+              <input
+                ref={fileRef}
+                type="file"
+                accept=".txt"
+                className="hidden"
+                onChange={(e) => setTxtFile(e.target.files?.[0] || null)}
+              />
+              <button
+                type="button"
+                onClick={() => fileRef.current?.click()}
+                className="text-xs bg-white border border-gray-300 rounded px-3 py-1 hover:bg-gray-50 transition-colors"
+              >
+                📎 选择 TXT
+              </button>
+              {txtFile && (
+                <span className="text-xs text-gray-600">{txtFile.name}</span>
+              )}
+              <button
+                type="button"
+                onClick={handleAIAssess}
+                disabled={!txtFile || aiLoading || !hasApiKey}
+                className="text-xs bg-indigo-600 text-white rounded px-3 py-1 hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
+                {aiLoading ? (
+                  <span className="flex items-center gap-1">
+                    <span className="animate-spin">⏳</span> 分析中…
+                  </span>
+                ) : (
+                  "AI 生成反馈"
+                )}
+              </button>
+            </div>
+            {aiError && <p className="text-xs text-red-500 mt-2">{aiError}</p>}
+          </div>
 
           {/* 星级评分 */}
           <div>
@@ -80,31 +157,23 @@ export function FeedbackForm({
                   type="button"
                   onClick={() => setRating(star)}
                   className={`text-2xl transition-colors ${
-                    star <= rating
-                      ? "text-amber-400"
-                      : "text-gray-300 hover:text-amber-300"
+                    star <= rating ? "text-amber-400" : "text-gray-300 hover:text-amber-300"
                   }`}
                 >
                   ★
                 </button>
               ))}
-              {rating > 0 && (
-                <span className="text-sm text-gray-500 ml-2 self-center">
-                  {rating} / 5
-                </span>
-              )}
+              {rating > 0 && <span className="text-sm text-gray-500 ml-2 self-center">{rating} / 5</span>}
             </div>
           </div>
 
           {/* 优点 */}
           <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1">
-              优点
-            </label>
+            <label className="block text-xs font-medium text-gray-600 mb-1">优点</label>
             <textarea
-              name="strengths"
+              value={strengths}
+              onChange={(e) => setStrengths(e.target.value)}
               rows={2}
-              defaultValue={existing?.strengths || ""}
               placeholder="候选人的优势、亮点..."
               className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none"
             />
@@ -112,13 +181,11 @@ export function FeedbackForm({
 
           {/* 担忧点 */}
           <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1">
-              担忧点
-            </label>
+            <label className="block text-xs font-medium text-gray-600 mb-1">担忧点</label>
             <textarea
-              name="concerns"
+              value={concerns}
+              onChange={(e) => setConcerns(e.target.value)}
               rows={2}
-              defaultValue={existing?.concerns || ""}
               placeholder="需要关注的问题、风险..."
               className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none"
             />
@@ -135,19 +202,12 @@ export function FeedbackForm({
                 { value: "fail", label: "❌ 不通过" },
                 { value: "pending", label: "⏸ 待定" },
               ].map((opt) => (
-                <label
-                  key={opt.value}
-                  className="flex items-center gap-1.5 text-sm cursor-pointer"
-                >
+                <label key={opt.value} className="flex items-center gap-1.5 text-sm cursor-pointer">
                   <input
                     type="radio"
-                    name="conclusion"
-                    value={opt.value}
-                    defaultChecked={
-                      existing
-                        ? existing.conclusion === opt.value
-                        : opt.value === "pending"
-                    }
+                    name="conclusion_radio"
+                    checked={conclusion === opt.value}
+                    onChange={() => setConclusion(opt.value)}
                     className="text-indigo-600"
                   />
                   {opt.label}
@@ -158,9 +218,7 @@ export function FeedbackForm({
 
           {/* 提交人 */}
           <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1">
-              提交人
-            </label>
+            <label className="block text-xs font-medium text-gray-600 mb-1">提交人</label>
             <input
               type="text"
               name="submittedBy"

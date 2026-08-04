@@ -302,11 +302,11 @@ export default async function CandidateDetailPage({
                           {fb ? (
                             <div>
                               <FeedbackDisplay fb={fb} />
-                              <FeedbackForm interviewId={iv.id} candidateId={candidate.id} interviewer={iv.interviewer} existing={fb} />
+                              <FeedbackForm interviewId={iv.id} candidateId={candidate.id} interviewer={iv.interviewer} existing={fb} hasApiKey={!!process.env.LLM_API_KEY} />
                             </div>
                           ) : isCompleted ? (
                             <div className="mt-2">
-                              <FeedbackForm interviewId={iv.id} candidateId={candidate.id} interviewer={iv.interviewer} />
+                              <FeedbackForm interviewId={iv.id} candidateId={candidate.id} interviewer={iv.interviewer} hasApiKey={!!process.env.LLM_API_KEY} />
                             </div>
                           ) : null}
                         </div>

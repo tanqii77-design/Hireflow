@@ -5,8 +5,9 @@
  */
 import { revalidatePath } from "next/cache";
 import db from "@/db";
-import { feedback } from "@/db/schema";
-import { eq, and } from "drizzle-orm";
+import { feedback, interviews, candidates, jobs } from "@/db/schema";
+import { eq } from "drizzle-orm";
+import { assessInterview } from "@/lib/llm";
 
 /**
  * 提交反馈（不存在则创建，存在则更新）
@@ -58,4 +59,30 @@ export async function submitFeedback(formData: FormData) {
   }
 
   revalidatePath(`/candidates/${candidateId}`);
+}
+
+/**
+ * AI 面试评估 — 根据 TXT 面试记录生成反馈草稿
+ * 返回 { rating, strengths, concerns, conclusion }，不写入数据库
+ */
+export async function aiAssessInterview(interviewId: number, transcript: string) {
+  if (!transcript.trim()) {
+    throw new Error("面试记录文本不能为空");
+  }
+
+  // 查面试信息
+  const [iv] = await db.select().from(interviews).where(eq(interviews.id, interviewId));
+  if (!iv) throw new Error("面试不存在");
+
+  // 查候选人
+  const [cand] = await db.select().from(candidates).where(eq(candidates.id, iv.candidateId));
+  if (!cand) throw new Error("候选人不存在");
+
+  // 查关联职位 JD
+  const [job] = await db.select().from(jobs).where(eq(jobs.id, cand.jobId));
+  const jobTitle = job?.title || "未知职位";
+  const jobDescription = job?.description || "";
+
+  // 调用 LLM
+  return assessInterview(jobTitle, jobDescription, transcript);
 }

@@ -82,3 +82,80 @@ export async function evaluateMatch(
       : "谨慎考虑",
   };
 }
+
+// ===== 面试评估 prompt =====
+
+const INTERVIEW_PROMPT = `你是一位资深 HR 面试官。根据职位 JD 和面试记录，给出结构化的面试反馈草稿。
+
+返回严格 JSON（不要 markdown、不要解释）：
+{
+  "rating": 1-5,
+  "strengths": "候选人的优势、亮点（用适合填入反馈表单的自然语言表述，2-4句话）",
+  "concerns": "需要关注的问题、风险点（用适合填入反馈表单的自然语言表述，2-4句话）",
+  "conclusion": "pass" | "fail" | "pending"
+}
+
+评分标准：5=强烈推荐 / 4=推荐 / 3=待定 / 2=有顾虑 / 1=不推荐。
+请基于面试记录中的实际表现给出客观评价。`;
+
+export interface InterviewAssessment {
+  rating: number;
+  strengths: string;
+  concerns: string;
+  conclusion: string;
+}
+
+/**
+ * AI 面试评估 — 根据面试记录文本生成反馈草稿
+ */
+export async function assessInterview(
+  jobTitle: string,
+  jobDescription: string,
+  transcript: string
+): Promise<InterviewAssessment> {
+  if (!LLM_API_KEY) {
+    throw new Error("未配置 LLM_API_KEY 环境变量");
+  }
+
+  const userMsg = `【职位名称】${jobTitle}\n【职位 JD】${jobDescription || "无 JD 描述"}\n\n【面试记录】\n${transcript}`;
+
+  const res = await fetch(`${LLM_BASE_URL}/chat/completions`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${LLM_API_KEY}`,
+    },
+    body: JSON.stringify({
+      model: LLM_MODEL,
+      messages: [
+        { role: "system", content: INTERVIEW_PROMPT },
+        { role: "user", content: userMsg },
+      ],
+      temperature: 0.3,
+      max_tokens: 800,
+    }),
+  });
+
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(`LLM API 错误 ${res.status}: ${text.slice(0, 200)}`);
+  }
+
+  const data = await res.json();
+  const content = data.choices?.[0]?.message?.content || "";
+
+  let jsonStr = content.trim();
+  const jsonMatch = jsonStr.match(/\{[\s\S]*\}/);
+  if (jsonMatch) jsonStr = jsonMatch[0];
+
+  const parsed = JSON.parse(jsonStr);
+
+  return {
+    rating: Math.max(1, Math.min(5, Number(parsed.rating) || 3)),
+    strengths: typeof parsed.strengths === "string" ? parsed.strengths : "",
+    concerns: typeof parsed.concerns === "string" ? parsed.concerns : "",
+    conclusion: ["pass", "fail", "pending"].includes(parsed.conclusion)
+      ? parsed.conclusion
+      : "pending",
+  };
+}
