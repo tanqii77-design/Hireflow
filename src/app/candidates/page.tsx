@@ -13,9 +13,10 @@ export const dynamic = "force-dynamic";
 export default async function CandidatesPage({
   searchParams,
 }: {
-  searchParams: Promise<{ status?: string; jobId?: string }>;
+  searchParams: Promise<{ status?: string; jobId?: string; error?: string }>;
 }) {
-  const { status: filterStatus, jobId: filterJobId } = await searchParams;
+  const { status: filterStatus, jobId: filterJobId, error } =
+    await searchParams;
 
   const allCandidates = await db
     .select()
@@ -44,6 +45,12 @@ export default async function CandidatesPage({
       <Breadcrumb
         items={[{ label: "看板", href: "/" }, { label: "候选人" }]}
       />
+
+      {error && (
+        <div className="bg-red-50 border border-red-200 text-red-700 rounded-lg px-4 py-3 mb-4 text-sm">
+          ⚠️ {error}
+        </div>
+      )}
 
       <div className="flex items-center justify-between mb-6">
         <div>

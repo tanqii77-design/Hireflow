@@ -1,49 +1,30 @@
 "use server";
 /**
  * 职位 Server Actions —— 创建、更新、删除
- *
- * "use server" 告诉 Next.js：这个文件里的函数只在服务端运行，
- * 但可以直接被客户端组件调用，像调普通函数一样。
- *
- * revalidatePath() 的作用：告诉 Next.js "这个路径的数据变了，重新渲染"
- * 这样列表页会自动拿到最新数据，不需要手动刷新浏览器。
  */
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import db from "@/db";
-import { jobs } from "@/db/schema";
+import { jobs, candidates } from "@/db/schema";
 import { eq } from "drizzle-orm";
 
-/**
- * 创建新职位
- * @param formData — 表单自动传入，FormData 包含所有 input 的 name/value
- */
 export async function createJob(formData: FormData) {
   const title = formData.get("title") as string;
   const description = (formData.get("description") as string) || "";
 
-  // 校验：标题不能为空
   if (!title || !title.trim()) {
-    // redirect 到新建页并带上错误信息
-    redirect("/jobs/new?error=标题不能为空");
+    redirect("/jobs/new?error=" + encodeURIComponent("标题不能为空"));
   }
 
-  // 插入数据库
   await db.insert(jobs).values({
     title: title.trim(),
     description: description.trim(),
   });
 
-  // 让列表页重新从数据库拿数据
   revalidatePath("/jobs");
-
-  // 跳回列表页
   redirect("/jobs");
 }
 
-/**
- * 更新职位
- */
 export async function updateJob(formData: FormData) {
   const id = parseInt(formData.get("id") as string);
   const title = (formData.get("title") as string) || "";
@@ -51,10 +32,9 @@ export async function updateJob(formData: FormData) {
   const status = (formData.get("status") as string) || undefined;
 
   if (!title.trim()) {
-    redirect(`/jobs/${id}/edit?error=标题不能为空`);
+    redirect(`/jobs/${id}/edit?error=` + encodeURIComponent("标题不能为空"));
   }
 
-  // 构建更新对象
   const updates: Record<string, unknown> = {
     title: title.trim(),
     description: description.trim(),
@@ -71,12 +51,29 @@ export async function updateJob(formData: FormData) {
 }
 
 /**
- * 删除职位
+ * 删除职位 — 带外键保护
  */
 export async function deleteJob(formData: FormData) {
   const id = parseInt(formData.get("id") as string);
 
-  await db.delete(jobs).where(eq(jobs.id, id));
+  // 检查该职位下是否有候选人（在 try 外，redirect 不会被误捕）
+  const existingCandidates = await db
+    .select()
+    .from(candidates)
+    .where(eq(candidates.jobId, id));
+  const count = existingCandidates.length;
+
+  if (count > 0) {
+    const msg = `该职位下有 ${count} 位候选人，无法删除。可将职位状态改为"已关闭"，或先处理这些候选人`;
+    redirect(`/jobs?error=` + encodeURIComponent(msg));
+  }
+
+  // 只把数据库操作包在 try 里
+  try {
+    await db.delete(jobs).where(eq(jobs.id, id));
+  } catch (e: any) {
+    redirect(`/jobs?error=` + encodeURIComponent(`删除失败：${e.message || "未知错误"}`));
+  }
 
   revalidatePath("/jobs");
   redirect("/jobs");

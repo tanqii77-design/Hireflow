@@ -19,7 +19,7 @@ export async function scheduleInterview(formData: FormData) {
   const scheduledAt = (formData.get("scheduledAt") as string) || "";
 
   if (!interviewer.trim()) {
-    redirect(`/candidates/${candidateId}?error=面试官姓名不能为空`);
+    redirect(`/candidates/${candidateId}?error=` + encodeURIComponent("面试官姓名不能为空"));
   }
 
   // 计算轮次

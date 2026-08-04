@@ -14,7 +14,12 @@ import { Breadcrumb } from "@/components/breadcrumb";
 // 告诉 Next.js 这个页面每次请求都重新渲染（不缓存）
 export const dynamic = "force-dynamic";
 
-export default async function JobsPage() {
+export default async function JobsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ error?: string }>;
+}) {
+  const { error } = await searchParams;
   // 直接从数据库读所有职位，按创建时间倒序
   const allJobs = await db.select().from(jobs).orderBy(desc(jobs.createdAt));
 
@@ -63,6 +68,12 @@ export default async function JobsPage() {
   return (
     <div>
       <Breadcrumb items={[{ label: "看板", href: "/" }, { label: "职位" }]} />
+
+      {error && (
+        <div className="bg-red-50 border border-red-200 text-red-700 rounded-lg px-4 py-3 mb-4 text-sm">
+          ⚠️ {error}
+        </div>
+      )}
 
       {/* 页面头部 */}
       <div className="flex items-center justify-between mb-6">
