@@ -5,8 +5,8 @@
  */
 import Link from "next/link";
 import db from "@/db";
-import { candidates, jobs, interviews, feedback } from "@/db/schema";
-import { eq, asc, inArray } from "drizzle-orm";
+import { candidates, jobs, interviews, feedback, matches } from "@/db/schema";
+import { eq, asc, inArray, and, desc } from "drizzle-orm";
 import { notFound } from "next/navigation";
 import { StatusAdvanceButton } from "./status-button";
 import { ScheduleForm } from "./schedule-form";
@@ -14,6 +14,8 @@ import { InterviewButtons } from "./interview-buttons";
 import { FeedbackDisplay, type FeedbackData } from "./feedback-display";
 import { FeedbackForm } from "./feedback-form";
 import { Breadcrumb } from "@/components/breadcrumb";
+import { ResumeCard } from "./resume-card";
+import { MatchCard } from "./match-card";
 
 export const dynamic = "force-dynamic";
 
@@ -62,6 +64,35 @@ export default async function CandidateDetailPage({
   const feedbackMap = new Map<number, FeedbackData>(
     feedbackList.map((fb: typeof feedback.$inferSelect) => [fb.interviewId, fb as FeedbackData])
   );
+
+  // 查匹配记录（按时间倒序）
+  const matchRecords = await db
+    .select()
+    .from(matches)
+    .where(eq(matches.candidateId, cid))
+    .orderBy(desc(matches.createdAt));
+
+  // 查开放职位（供匹配按钮使用）
+  const openJobs = await db.select().from(jobs).where(eq(jobs.status, "open"));
+
+  // 匹配记录补充职位名
+  const matchJobIds = [...new Set(matchRecords.map((m: typeof matches.$inferSelect) => m.jobId))] as number[];
+  const matchJobMap = new Map<number, string>();
+  for (const mjid of matchJobIds) {
+    const [mj] = await db.select().from(jobs).where(eq(jobs.id, mjid));
+    if (mj) matchJobMap.set(mjid, mj.title);
+  }
+
+  const matchRecordsWithTitle = matchRecords.map((m: typeof matches.$inferSelect) => ({
+    id: m.id,
+    jobId: m.jobId,
+    jobTitle: matchJobMap.get(m.jobId) || `职位#${m.jobId}`,
+    score: m.score,
+    strengths: m.strengths ? JSON.parse(m.strengths) : [],
+    concerns: m.concerns ? JSON.parse(m.concerns) : [],
+    recommendation: m.recommendation,
+    createdAt: m.createdAt,
+  }));
 
   // 状态流程定义（"进入面试"已改为自动触发，不显示为按钮）
   const statusFlow: Record<
@@ -356,8 +387,20 @@ export default async function CandidateDetailPage({
           </div>
         </div>
 
-        {/* 右侧：状态操作 */}
+        {/* 右侧：简历 + AI 匹配 + 状态操作 */}
         <div className="space-y-4">
+          <ResumeCard
+            candidateId={candidate.id}
+            resumeText={candidate.resumeText ?? null}
+          />
+
+          <MatchCard
+            candidateId={candidate.id}
+            hasResume={!!(candidate.resumeText?.trim())}
+            openJobs={openJobs}
+            matchRecords={matchRecordsWithTitle}
+          />
+
           <div className="bg-white rounded-xl border border-gray-200 p-5">
             <h3 className="font-semibold text-gray-700 mb-3">推进状态</h3>
             {currentFlow.next.length > 0 ? (

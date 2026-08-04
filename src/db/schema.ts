@@ -1,6 +1,6 @@
 /**
  * 数据库 Schema 定义
- * 5 张表：jobs / candidates / interviews / feedback / activity_logs
+ * 6 张表：jobs / candidates / interviews / feedback / activity_logs / matches
  */
 import { sqliteTable, text, integer } from "drizzle-orm/sqlite-core";
 import { sql } from "drizzle-orm";
@@ -26,6 +26,7 @@ export const candidates = sqliteTable("candidates", {
     .notNull()
     .references(() => jobs.id),             // 应聘职位（外键 → jobs.id）
   source: text("source"),                   // 来源：领英/内推/官网/BOSS直聘...
+  resumeText: text("resume_text"),           // ★ 候选人简历文本（用于 AI 匹配）
   status: text("status").notNull().default("screening"),
   // 状态：screening（筛选中）/ interviewing（面试中）/
   //       passed（通过）/ rejected（淘汰）/
@@ -67,6 +68,24 @@ export const feedback = sqliteTable("feedback", {
     .notNull()
     .default("pending"),                    // pass（通过）/ fail（不通过）/ pending（待定）
   submittedBy: text("submitted_by"),        // 提交人（通常是面试官）
+  createdAt: text("created_at")
+    .notNull()
+    .default(sql`(datetime('now'))`),
+});
+
+// ===== AI 匹配记录表 =====
+export const matches = sqliteTable("matches", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  candidateId: integer("candidate_id")
+    .notNull()
+    .references(() => candidates.id),
+  jobId: integer("job_id")
+    .notNull()
+    .references(() => jobs.id),
+  score: integer("score").notNull(),           // 0-100
+  strengths: text("strengths"),                // JSON 数组
+  concerns: text("concerns"),                  // JSON 数组
+  recommendation: text("recommendation"),      // "推荐面试" | "谨慎考虑" | "不推荐"
   createdAt: text("created_at")
     .notNull()
     .default(sql`(datetime('now'))`),

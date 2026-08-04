@@ -44,9 +44,12 @@ async function migrate() {
       email TEXT,
       job_id INTEGER NOT NULL REFERENCES jobs(id),
       source TEXT,
+      resume_text TEXT,
       status TEXT NOT NULL DEFAULT 'screening',
       created_at TEXT NOT NULL DEFAULT (datetime('now'))
     );
+
+    ALTER TABLE candidates ADD COLUMN resume_text TEXT;
 
     CREATE TABLE IF NOT EXISTS interviews (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -70,6 +73,17 @@ async function migrate() {
       created_at TEXT NOT NULL DEFAULT (datetime('now'))
     );
 
+    CREATE TABLE IF NOT EXISTS matches (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      candidate_id INTEGER NOT NULL REFERENCES candidates(id),
+      job_id INTEGER NOT NULL REFERENCES jobs(id),
+      score INTEGER NOT NULL,
+      strengths TEXT,
+      concerns TEXT,
+      recommendation TEXT,
+      created_at TEXT NOT NULL DEFAULT (datetime('now'))
+    );
+
     CREATE TABLE IF NOT EXISTS activity_logs (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       candidate_id INTEGER NOT NULL REFERENCES candidates(id),
@@ -89,9 +103,13 @@ async function migrate() {
     try {
       await client.execute(stmt + ";");
     } catch (e: any) {
-      // 表已存在就跳过
-      if (e.message && e.message.includes("already exists")) {
-        console.log(`  ⏭️  表已存在，跳过`);
+      // 表已存在 / 列已存在就跳过
+      if (
+        e.message &&
+        (e.message.includes("already exists") ||
+          e.message.includes("duplicate column"))
+      ) {
+        console.log(`  ⏭️  已存在，跳过`);
       } else {
         console.log(`  ❌ 错误: ${e.message}`);
       }
