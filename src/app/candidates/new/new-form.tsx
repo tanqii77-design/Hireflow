@@ -4,6 +4,7 @@
  */
 import { createCandidate } from "../actions";
 import Link from "next/link";
+import { Breadcrumb } from "@/components/breadcrumb";
 
 interface Job {
   id: number;
@@ -19,14 +20,13 @@ export function NewCandidateForm({
 }) {
   return (
     <div className="max-w-lg mx-auto">
-      <div className="mb-6">
-        <Link
-          href="/candidates"
-          className="text-sm text-gray-400 hover:text-indigo-600 transition-colors"
-        >
-          ← 返回候选人列表
-        </Link>
-      </div>
+      <Breadcrumb
+        items={[
+          { label: "看板", href: "/" },
+          { label: "候选人", href: "/candidates" },
+          { label: "新建候选人" },
+        ]}
+      />
 
       <h1 className="text-2xl font-bold mb-6">添加候选人</h1>
 

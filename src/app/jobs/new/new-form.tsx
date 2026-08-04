@@ -6,18 +6,18 @@
  */
 import { createJob } from "../actions";
 import Link from "next/link";
+import { Breadcrumb } from "@/components/breadcrumb";
 
 export function NewJobForm({ error }: { error?: string }) {
   return (
     <div className="max-w-lg mx-auto">
-      <div className="mb-6">
-        <Link
-          href="/jobs"
-          className="text-sm text-gray-400 hover:text-indigo-600 transition-colors"
-        >
-          ← 返回职位列表
-        </Link>
-      </div>
+      <Breadcrumb
+        items={[
+          { label: "看板", href: "/" },
+          { label: "职位", href: "/jobs" },
+          { label: "新建职位" },
+        ]}
+      />
 
       <h1 className="text-2xl font-bold mb-6">新建职位</h1>
 

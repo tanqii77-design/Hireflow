@@ -13,6 +13,7 @@ import { ScheduleForm } from "./schedule-form";
 import { InterviewButtons } from "./interview-buttons";
 import { FeedbackDisplay, type FeedbackData } from "./feedback-display";
 import { FeedbackForm } from "./feedback-form";
+import { Breadcrumb } from "@/components/breadcrumb";
 
 export const dynamic = "force-dynamic";
 
@@ -103,14 +104,13 @@ export default async function CandidateDetailPage({
 
   return (
     <div>
-      <div className="mb-6">
-        <Link
-          href="/candidates"
-          className="text-sm text-gray-400 hover:text-indigo-600 transition-colors"
-        >
-          ← 返回候选人列表
-        </Link>
-      </div>
+      <Breadcrumb
+        items={[
+          { label: "看板", href: "/" },
+          { label: "候选人", href: "/candidates" },
+          { label: candidate.name },
+        ]}
+      />
 
       {/* 错误提示 */}
       {error && (

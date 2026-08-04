@@ -8,6 +8,7 @@ import Link from "next/link";
 import db from "@/db";
 import { jobs, candidates } from "@/db/schema";
 import { eq } from "drizzle-orm";
+import { Breadcrumb } from "@/components/breadcrumb";
 import { notFound } from "next/navigation";
 
 export default async function JobDetailPage({
@@ -31,14 +32,13 @@ export default async function JobDetailPage({
 
   return (
     <div>
-      <div className="mb-6">
-        <Link
-          href="/jobs"
-          className="text-sm text-gray-400 hover:text-indigo-600 transition-colors"
-        >
-          ← 返回职位列表
-        </Link>
-      </div>
+      <Breadcrumb
+        items={[
+          { label: "看板", href: "/" },
+          { label: "职位", href: "/jobs" },
+          { label: job.title },
+        ]}
+      />
 
       {/* 职位头部信息 */}
       <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
