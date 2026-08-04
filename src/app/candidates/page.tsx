@@ -7,6 +7,7 @@ import { candidates, jobs } from "@/db/schema";
 import { desc, eq } from "drizzle-orm";
 import { DeleteButton } from "./delete-button";
 import { Breadcrumb } from "@/components/breadcrumb";
+import { Users } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -48,14 +49,14 @@ export default async function CandidatesPage({
 
       {error && (
         <div className="bg-red-50 border border-red-200 text-red-700 rounded-lg px-4 py-3 mb-4 text-sm">
-          ⚠️ {error}
+          {error}
         </div>
       )}
 
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold">👥 候选人管理</h1>
-          <p className="text-sm text-gray-500 mt-1">
+          <h1 className="text-2xl font-bold text-balance">候选人管理</h1>
+          <p className="text-sm text-gray-600 mt-1">
             {allCandidates.length > 0
               ? `共 ${allCandidates.length} 位候选人`
               : "还没有候选人"}
@@ -85,7 +86,7 @@ export default async function CandidatesPage({
             className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
               filterStatus === f.value || (!filterStatus && !f.value)
                 ? "bg-indigo-100 text-indigo-700"
-                : "bg-gray-100 text-gray-500 hover:bg-gray-200"
+                : "bg-gray-100 text-gray-600 hover:bg-gray-200"
             }`}
           >
             {f.label}
@@ -104,7 +105,7 @@ export default async function CandidatesPage({
           className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
             !filterJobId
               ? "bg-indigo-100 text-indigo-700"
-              : "bg-gray-100 text-gray-500 hover:bg-gray-200"
+              : "bg-gray-100 text-gray-600 hover:bg-gray-200"
           }`}
         >
           全部职位
@@ -120,7 +121,7 @@ export default async function CandidatesPage({
               className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
                 filterJobId === String(jid)
                   ? "bg-indigo-100 text-indigo-700"
-                  : "bg-gray-100 text-gray-500 hover:bg-gray-200"
+                  : "bg-gray-100 text-gray-600 hover:bg-gray-200"
               }`}
             >
               {jobMap.get(jid) || `职位#${jid}`}
@@ -132,13 +133,13 @@ export default async function CandidatesPage({
       {/* 空状态 */}
       {filtered.length === 0 ? (
         <div className="bg-white border border-dashed border-gray-300 rounded-xl p-16 text-center">
-          <div className="text-5xl mb-4">👤</div>
+          <Users className="w-12 h-12 mx-auto text-gray-300 mb-4" aria-hidden="true" />
           <h3 className="text-lg font-semibold text-gray-700 mb-2">
             {allCandidates.length === 0
               ? "还没有候选人"
               : "该状态下没有候选人"}
           </h3>
-          <p className="text-gray-400 mb-6">
+          <p className="text-gray-600 mb-6">
             {allCandidates.length === 0
               ? "添加第一个候选人，开始管理面试流程"
               : "换个筛选条件试试"}
@@ -157,19 +158,19 @@ export default async function CandidatesPage({
           <table className="w-full">
             <thead>
               <tr className="border-b border-gray-100 bg-gray-50/50">
-                <th className="text-left px-5 py-3 text-xs font-medium text-gray-500">
+                <th className="text-left px-5 py-3 text-xs font-medium text-gray-600">
                   姓名
                 </th>
-                <th className="text-left px-5 py-3 text-xs font-medium text-gray-500">
+                <th className="text-left px-5 py-3 text-xs font-medium text-gray-600">
                   应聘职位
                 </th>
-                <th className="text-left px-5 py-3 text-xs font-medium text-gray-500">
+                <th className="text-left px-5 py-3 text-xs font-medium text-gray-600">
                   来源
                 </th>
-                <th className="text-left px-5 py-3 text-xs font-medium text-gray-500">
+                <th className="text-left px-5 py-3 text-xs font-medium text-gray-600">
                   状态
                 </th>
-                <th className="text-right px-5 py-3 text-xs font-medium text-gray-500">
+                <th className="text-right px-5 py-3 text-xs font-medium text-gray-600">
                   操作
                 </th>
               </tr>
@@ -184,14 +185,14 @@ export default async function CandidatesPage({
                     >
                       {c.name}
                     </Link>
-                    <div className="text-xs text-gray-400 mt-0.5">
+                    <div className="text-xs text-gray-600 mt-0.5">
                       {c.email || c.phone || "无联系方式"}
                     </div>
                   </td>
                   <td className="px-5 py-3 text-sm text-gray-600">
                     {jobMap.get(c.jobId) || "—"}
                   </td>
-                  <td className="px-5 py-3 text-sm text-gray-500">
+                  <td className="px-5 py-3 text-sm text-gray-600">
                     {c.source || "—"}
                   </td>
                   <td className="px-5 py-3">
@@ -200,7 +201,7 @@ export default async function CandidatesPage({
                   <td className="px-5 py-3 text-right">
                     <Link
                       href={`/candidates/${c.id}`}
-                      className="text-sm text-gray-500 hover:text-indigo-600 px-2 py-1 transition-colors"
+                      className="text-sm text-gray-600 hover:text-indigo-600 px-2 py-1 transition-colors"
                     >
                       详情
                     </Link>
@@ -228,7 +229,7 @@ function StatusBadge({ status }: { status: string }) {
     offered: { label: "已发Offer", cls: "bg-purple-50 text-purple-700 border-purple-200" },
     hired: { label: "已入职", cls: "bg-emerald-50 text-emerald-700 border-emerald-200" },
   };
-  const m = map[status] || { label: status, cls: "bg-gray-100 text-gray-500 border-gray-200" };
+  const m = map[status] || { label: status, cls: "bg-gray-100 text-gray-600 border-gray-200" };
 
   return (
     <span className={`px-2 py-0.5 rounded-full text-xs font-medium border ${m.cls}`}>

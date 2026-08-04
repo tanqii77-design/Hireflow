@@ -38,10 +38,10 @@ export function MatchCard({ candidateId, hasResume, openJobs }: Props) {
 
   return (
     <div>
-      <h3 className="font-semibold text-gray-700 mb-3">💼 选择职位匹配</h3>
+      <h3 className="font-semibold text-gray-700 mb-3">选择职位匹配</h3>
 
       {openJobs.length === 0 ? (
-        <p className="text-sm text-gray-400">暂无开放职位</p>
+        <p className="text-sm text-gray-600">暂无开放职位</p>
       ) : (
         <div className="space-y-1 max-h-52 overflow-y-auto">
           {openJobs.map((job) => (
@@ -50,13 +50,13 @@ export function MatchCard({ candidateId, hasResume, openJobs }: Props) {
               <button
                 onClick={() => doMatch(job.id)}
                 disabled={!hasResume || matchingJobId !== null}
-                className="text-xs text-indigo-600 hover:text-indigo-700 disabled:text-gray-300 disabled:cursor-not-allowed"
+                className="text-xs text-indigo-600 hover:text-indigo-700 disabled:text-gray-300 disabled:cursor-not-allowed px-2 py-1"
                 title={!hasResume ? "请先添加候选人简历" : ""}
               >
                 {matchingJobId === job.id ? (
                   <span className="animate-spin inline-block">⏳</span>
                 ) : (
-                  "⚡ 匹配"
+                  "匹配"
                 )}
               </button>
             </div>
@@ -65,7 +65,7 @@ export function MatchCard({ candidateId, hasResume, openJobs }: Props) {
       )}
 
       {!hasResume && (
-        <p className="text-xs text-gray-400 mt-2">💡 请先添加候选人简历后再进行匹配</p>
+        <p className="text-xs text-gray-600 mt-2">请先添加候选人简历后再进行匹配</p>
       )}
       {matchError && (
         <p className="text-xs text-red-500 mt-2">{matchError}</p>

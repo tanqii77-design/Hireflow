@@ -10,6 +10,7 @@ import { jobs, candidates, interviews, feedback, matches } from "@/db/schema";
 import { desc, eq, inArray } from "drizzle-orm";
 import { DeleteButton } from "./delete-button";
 import { Breadcrumb } from "@/components/breadcrumb";
+import { Briefcase } from "lucide-react";
 
 // 告诉 Next.js 这个页面每次请求都重新渲染（不缓存）
 export const dynamic = "force-dynamic";
@@ -71,15 +72,15 @@ export default async function JobsPage({
 
       {error && (
         <div className="bg-red-50 border border-red-200 text-red-700 rounded-lg px-4 py-3 mb-4 text-sm">
-          ⚠️ {error}
+          {error}
         </div>
       )}
 
       {/* 页面头部 */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold">💼 职位管理</h1>
-          <p className="text-sm text-gray-500 mt-1">
+          <h1 className="text-2xl font-bold text-balance">职位管理</h1>
+          <p className="text-sm text-gray-600 mt-1">
             {allJobs.length > 0
               ? `共 ${allJobs.length} 个职位`
               : "还没有职位，创建一个吧"}
@@ -96,11 +97,11 @@ export default async function JobsPage({
       {/* 空状态：没有任何职位时显示 */}
       {allJobs.length === 0 ? (
         <div className="bg-white border border-dashed border-gray-300 rounded-xl p-16 text-center">
-          <div className="text-5xl mb-4">📋</div>
+          <Briefcase className="w-12 h-12 mx-auto text-gray-300 mb-4" aria-hidden="true" />
           <h3 className="text-lg font-semibold text-gray-700 mb-2">
             还没有职位
           </h3>
-          <p className="text-gray-400 mb-6">
+          <p className="text-gray-600 mb-6">
             创建第一个职位后，就可以开始添加候选人了
           </p>
           <Link
@@ -133,11 +134,11 @@ export default async function JobsPage({
                   </div>
 
                   {job.description ? (
-                    <p className="text-sm text-gray-500 mt-1 line-clamp-2">
+                    <p className="text-sm text-gray-600 mt-1 line-clamp-2">
                       {job.description}
                     </p>
                   ) : (
-                    <p className="text-sm text-gray-300 mt-1 italic">
+                    <p className="text-sm text-gray-500 mt-1 italic">
                       暂无简介
                     </p>
                   )}
@@ -146,7 +147,7 @@ export default async function JobsPage({
                   {(() => {
                     const s = getJobStats(job.id);
                     return (
-                      <div className="flex gap-3 mt-3 text-xs text-gray-500 flex-wrap">
+                      <div className="flex gap-3 mt-3 text-xs text-gray-600 flex-wrap">
                         <span>候选人 {s.total}</span>
                         {s.interviewing > 0 && (
                           <span className="text-blue-600">
@@ -172,7 +173,7 @@ export default async function JobsPage({
                     );
                   })()}
 
-                  <p className="text-xs text-gray-400 mt-2">
+                  <p className="text-xs text-gray-600 mt-2">
                     创建于{" "}
                     {new Date(job.createdAt).toLocaleDateString("zh-CN")}
                   </p>
@@ -182,7 +183,7 @@ export default async function JobsPage({
                 <div className="flex items-center gap-2 flex-shrink-0">
                   <Link
                     href={`/jobs/${job.id}/edit`}
-                    className="text-sm text-gray-500 hover:text-indigo-600 px-3 py-1.5 rounded-lg hover:bg-indigo-50 transition-colors"
+                    className="text-sm text-gray-600 hover:text-indigo-600 px-3 py-1.5 rounded-lg hover:bg-indigo-50 transition-colors"
                   >
                     编辑
                   </Link>
@@ -210,7 +211,7 @@ function StatusBadge({ status }: { status: string }) {
       className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium ${
         isOpen
           ? "bg-green-50 text-green-700 border border-green-200"
-          : "bg-gray-100 text-gray-500 border border-gray-200"
+          : "bg-gray-100 text-gray-600 border border-gray-200"
       }`}
     >
       <span

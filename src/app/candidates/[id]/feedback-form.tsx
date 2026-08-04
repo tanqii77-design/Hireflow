@@ -71,7 +71,7 @@ export function FeedbackForm({
               : "text-amber-600 hover:bg-amber-50 font-medium"
           }`}
         >
-          {isEdit ? "编辑反馈" : "✏️ 填写反馈"}
+          {isEdit ? "编辑反馈" : "填写反馈"}
         </button>
       ) : (
         <form
@@ -82,7 +82,7 @@ export function FeedbackForm({
             <span className="text-sm font-medium text-gray-700">
               {isEdit ? "编辑反馈" : "填写反馈"}
             </span>
-            <button type="button" onClick={() => setOpen(false)} className="text-gray-400 hover:text-gray-600 text-sm">
+            <button type="button" onClick={() => setOpen(false)} className="text-gray-600 hover:text-gray-600 text-sm">
               收起
             </button>
           </div>
@@ -93,15 +93,15 @@ export function FeedbackForm({
           <input type="hidden" name="strengths" value={strengths} />
           <input type="hidden" name="concerns" value={concerns} />
 
-          {/* 🤖 AI 面试评估 */}
+          {/* AI 面试评估 */}
           <div className="bg-indigo-50 rounded-lg border border-indigo-200 p-3">
             <div className="flex items-center gap-2 mb-2">
-              <span className="text-sm font-medium text-indigo-700">🤖 AI 面试评估</span>
+              <span className="text-sm font-medium text-indigo-700">AI 面试评估</span>
               {!hasApiKey && (
-                <span className="text-xs text-gray-400">（未配置 API Key，可手动填写）</span>
+                <span className="text-xs text-gray-600">（未配置 API Key，可手动填写）</span>
               )}
             </div>
-            <p className="text-xs text-gray-500 mb-2">
+            <p className="text-xs text-gray-600 mb-2">
               上传面试记录（TXT），AI 将结合岗位 JD 生成反馈草稿，提交前请人工核对
             </p>
 
@@ -118,7 +118,7 @@ export function FeedbackForm({
                 onClick={() => fileRef.current?.click()}
                 className="text-xs bg-white border border-gray-300 rounded px-3 py-1 hover:bg-gray-50 transition-colors"
               >
-                📎 选择 TXT
+                选择 TXT
               </button>
               {txtFile && (
                 <span className="text-xs text-gray-600">{txtFile.name}</span>
@@ -152,6 +152,7 @@ export function FeedbackForm({
                   key={star}
                   type="button"
                   onClick={() => setRating(star)}
+                  aria-label={`${star} 星`}
                   className={`text-2xl transition-colors ${
                     star <= rating ? "text-amber-400" : "text-gray-300 hover:text-amber-300"
                   }`}
@@ -159,7 +160,7 @@ export function FeedbackForm({
                   ★
                 </button>
               ))}
-              {rating > 0 && <span className="text-sm text-gray-500 ml-2 self-center">{rating} / 5</span>}
+              {rating > 0 && <span className="text-sm text-gray-600 ml-2 self-center">{rating} / 5</span>}
             </div>
           </div>
 

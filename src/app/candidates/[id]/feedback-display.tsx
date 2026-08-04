@@ -21,7 +21,7 @@ export function FeedbackDisplay({ fb }: { fb: FeedbackData }) {
             {"★".repeat(5 - fb.rating)}
           </span>
         </span>
-        <span className="text-xs text-gray-400">{fb.rating}/5</span>
+        <span className="text-xs text-gray-600">{fb.rating}/5</span>
       </div>
 
       {/* 优点 */}
@@ -35,14 +35,14 @@ export function FeedbackDisplay({ fb }: { fb: FeedbackData }) {
       {/* 担忧点 */}
       {fb.concerns && (
         <div className="text-xs">
-          <span className="text-amber-600 font-medium">⚠️ 担忧：</span>
+          <span className="text-amber-600 font-medium">担忧：</span>
           <span className="text-gray-600">{fb.concerns}</span>
         </div>
       )}
 
       {/* 提交人 */}
       {fb.submittedBy && (
-        <div className="text-xs text-gray-400">提交人：{fb.submittedBy}</div>
+        <div className="text-xs text-gray-600">提交人：{fb.submittedBy}</div>
       )}
     </div>
   );

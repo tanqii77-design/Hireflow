@@ -204,14 +204,14 @@ export default async function CandidateDetailPage({
 
       {error && (
         <div className="bg-red-50 border border-red-200 text-red-700 rounded-lg px-4 py-3 mb-6 text-sm">
-          ⚠️ {error}
+          {error}
         </div>
       )}
 
       {/* 个人信息卡（紧凑） */}
       <div className="neu-card p-5 mb-6">
         <div className="flex items-center justify-between mb-3">
-          <h1 className="text-2xl font-bold">{candidate.name}</h1>
+          <h1 className="text-2xl font-bold text-balance">{candidate.name}</h1>
           <span
             className={`px-2.5 py-0.5 rounded-full text-xs font-medium border ${
               currentFlow.label === "已入职"
@@ -226,18 +226,18 @@ export default async function CandidateDetailPage({
         </div>
 
         <div className="flex items-center gap-6 text-sm text-gray-600 flex-wrap">
-          <span>📞 {candidate.phone || "—"}</span>
-          <span>📧 {candidate.email || "—"}</span>
+          <span>{candidate.phone || "—"}</span>
+          <span>{candidate.email || "—"}</span>
           <span>
-            💼{" "}
+            <span aria-hidden="true">💼 </span>
             {job ? (
               <Link href={`/jobs/${job.id}`} className="text-indigo-600 hover:text-indigo-700">
                 {job.title}
               </Link>
             ) : "—"}
           </span>
-          <span>📍 {candidate.source || "—"}</span>
-          <span className="text-gray-400 text-xs ml-auto">
+          <span>{candidate.source || "—"}</span>
+          <span className="text-gray-600 text-xs ml-auto">
             创建于 {new Date(candidate.createdAt).toLocaleDateString("zh-CN")}
           </span>
         </div>
@@ -250,13 +250,13 @@ export default async function CandidateDetailPage({
           <div className="neu-card p-6">
             <div className="flex items-center justify-between mb-4">
               <h2 className="font-semibold text-gray-700">
-                📅 面试记录（{interviewList.length}）
+                面试记录（{interviewList.length}）
               </h2>
               <ScheduleForm candidateId={candidate.id} />
             </div>
 
             {interviewList.length === 0 ? (
-              <div className="text-center py-8 text-gray-400">
+              <div className="text-center py-8 text-gray-600">
                 <p className="text-sm">暂无面试记录</p>
                 <p className="text-xs mt-1">点击&quot;安排面试&quot;按钮添加第一轮面试</p>
               </div>
@@ -281,22 +281,22 @@ export default async function CandidateDetailPage({
                           <div className="flex items-center gap-2 flex-wrap">
                             <span className="font-semibold text-gray-800 text-sm">
                               第{iv.roundNumber}轮 ·{" "}
-                              {iv.interviewType === "video" ? "🎥 视频" : iv.interviewType === "phone" ? "📞 电话" : "🏢 现场"}
+                              {iv.interviewType === "video" ? "视频" : iv.interviewType === "phone" ? "电话" : "现场"}
                             </span>
                             <InterviewStatusBadge status={iv.status} />
                             {fb ? (
-                              <span className="text-xs text-green-600 font-medium">✓ 已反馈</span>
+                              <span className="text-xs text-green-600 font-medium">已反馈</span>
                             ) : isCompleted ? (
-                              <span className="text-xs text-amber-600 font-medium">⚠ 待反馈</span>
+                              <span className="text-xs text-amber-600 font-medium">待反馈</span>
                             ) : null}
                             <InterviewButtons interviewId={iv.id} candidateId={candidate.id} status={iv.status} />
                           </div>
-                          <div className="flex gap-4 mt-1.5 text-gray-500 text-xs">
+                          <div className="flex gap-4 mt-1.5 text-gray-600 text-xs">
                             <span>面试官：{iv.interviewer}</span>
                             {iv.scheduledAt ? (
                               <span>{new Date(iv.scheduledAt).toLocaleString("zh-CN", { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" })}</span>
                             ) : (
-                              <span className="text-gray-400">时间待定</span>
+                              <span className="text-gray-600">时间待定</span>
                             )}
                           </div>
                           {fb ? (
@@ -339,14 +339,14 @@ export default async function CandidateDetailPage({
               })}
             </div>
           ) : (
-            <p className="text-sm text-gray-400">已是最终状态</p>
+            <p className="text-sm text-gray-600">已是最终状态</p>
           )}
         </div>
       </div>
 
-      {/* 🤖 AI 智能匹配大卡片（三区布局） */}
+      {/* AI 智能匹配大卡片（三区布局） */}
       <div className="neu-card p-6">
-        <h2 className="font-semibold text-gray-700 mb-4">🤖 AI 智能匹配</h2>
+        <h2 className="font-semibold text-gray-700 mb-4">AI 智能匹配</h2>
 
         {/* 上排：简历（左）+ 职位匹配面板（右） */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
@@ -370,7 +370,7 @@ export default async function CandidateDetailPage({
         {/* 下排：匹配结果横排卡片（全宽） */}
         {matchRecordsWithTitle.length > 0 ? (
           <div className="border-t border-gray-100 pt-4">
-            <h3 className="text-sm font-medium text-gray-500 mb-3">
+            <h3 className="text-sm font-medium text-gray-600 mb-3">
               匹配记录（{matchRecordsWithTitle.length}）
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -392,23 +392,30 @@ export default async function CandidateDetailPage({
                   </div>
                   <div className="flex items-center gap-2 mb-2">
                     <span className="text-lg font-bold text-indigo-600">{m.score}</span>
-                    <span className="text-xs text-gray-400">/100</span>
+                    <span className="text-xs text-gray-600">/100</span>
                     <div className="flex-1 bg-gray-100 rounded-full h-1.5">
                       <div
+                        role="progressbar"
+                        aria-valuenow={m.score}
+                        aria-valuemin={0}
+                        aria-valuemax={100}
                         className={`h-1.5 rounded-full ${m.score >= 75 ? "bg-green-500" : m.score >= 50 ? "bg-amber-500" : "bg-red-500"}`}
                         style={{ width: `${m.score}%` }}
                       />
                     </div>
+                    <span className={`text-xs font-medium ${m.score >= 75 ? "text-green-600" : m.score >= 50 ? "text-amber-600" : "text-red-500"}`}>
+                      {m.score >= 75 ? "优秀" : m.score >= 50 ? "一般" : "较低"}
+                    </span>
                   </div>
-                  <div className="text-xs text-gray-500 space-y-0.5">
+                  <div className="text-xs text-gray-600 space-y-0.5">
                     {m.strengths.length > 0 && (
                       <div><span className="text-green-600">👍 {m.strengths[0]}</span></div>
                     )}
                     {m.concerns.length > 0 && (
-                      <div><span className="text-amber-600">⚠️ {m.concerns[0]}</span></div>
+                      <div><span className="text-amber-600">{m.concerns[0]}</span></div>
                     )}
                   </div>
-                  <div className="text-xs text-gray-400 mt-2">
+                  <div className="text-xs text-gray-600 mt-2">
                     {new Date(m.createdAt).toLocaleString("zh-CN")}
                   </div>
                 </div>
@@ -416,8 +423,8 @@ export default async function CandidateDetailPage({
             </div>
           </div>
         ) : (
-          <div className="border-t border-gray-100 pt-4 text-center text-sm text-gray-400">
-            还没有匹配记录，选择职位后点击"⚡ 匹配"
+          <div className="border-t border-gray-100 pt-4 text-center text-sm text-gray-600">
+            还没有匹配记录，选择职位后点击"匹配"
           </div>
         )}
       </div>
@@ -429,7 +436,7 @@ function InterviewStatusBadge({ status }: { status: string }) {
   switch (status) {
     case "scheduled": return <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700 border border-blue-200">已安排</span>;
     case "completed": return <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-green-50 text-green-700 border border-green-200">已完成</span>;
-    case "cancelled": return <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-500 border border-gray-200">已取消</span>;
-    default: return <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-500">{status}</span>;
+    case "cancelled": return <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600 border border-gray-200">已取消</span>;
+    default: return <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600">{status}</span>;
   }
 }

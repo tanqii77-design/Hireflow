@@ -38,7 +38,7 @@ export function InterviewButtons({
         <input type="hidden" name="candidateId" value={candidateId} />
         <button
           type="submit"
-          className="text-xs text-gray-400 hover:text-red-600 hover:bg-red-50 px-2 py-1 rounded transition-colors"
+          className="text-xs text-gray-600 hover:text-red-600 hover:bg-red-50 px-2 py-1 rounded transition-colors"
           onClick={(e) => {
             if (!confirm("确认取消这轮面试？")) {
               e.preventDefault();

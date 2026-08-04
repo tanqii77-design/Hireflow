@@ -29,7 +29,7 @@ export function Breadcrumb({ items }: { items: Crumb[] }) {
               {item.label}
             </Link>
           ) : (
-            <span className="text-gray-400 font-medium">{item.label}</span>
+            <span className="text-gray-600 font-medium">{item.label}</span>
           )}
         </span>
       ))}

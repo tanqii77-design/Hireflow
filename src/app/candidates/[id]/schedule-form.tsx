@@ -54,9 +54,9 @@ export function ScheduleForm({ candidateId }: { candidateId: number }) {
               name="interviewType"
               className="neu-inset w-full px-3 py-2 text-sm"
             >
-              <option value="video">🎥 视频面试</option>
-              <option value="phone">📞 电话面试</option>
-              <option value="onsite">🏢 现场面试</option>
+              <option value="video">视频面试</option>
+              <option value="phone">电话面试</option>
+              <option value="onsite">现场面试</option>
             </select>
           </div>
 
@@ -70,7 +70,7 @@ export function ScheduleForm({ candidateId }: { candidateId: number }) {
               name="scheduledAt"
               className="neu-inset w-full px-3 py-2 text-sm"
             />
-            <p className="text-xs text-gray-400 mt-1">选填，不填表示时间待定</p>
+            <p className="text-xs text-gray-600 mt-1">选填，不填表示时间待定</p>
           </div>
 
           {/* 按钮组 */}

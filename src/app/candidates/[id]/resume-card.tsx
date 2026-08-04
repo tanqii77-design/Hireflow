@@ -30,11 +30,11 @@ export function ResumeCard({
 
   return (
     <div>
-      <h3 className="font-semibold text-gray-700 mb-3">📄 简历</h3>
+      <h3 className="font-semibold text-gray-700 mb-3">简历</h3>
 
       {!hasResume && !hasResumeFile && !editing ? (
         <div>
-          <p className="text-sm text-gray-400 mb-3">暂无简历</p>
+          <p className="text-sm text-gray-600 mb-3">暂无简历</p>
           <div className="mb-3">
             <PdfUploader onTextExtracted={(t) => { setText(t); setEditing(true); }} onFileChange={setPdfFile} />
           </div>
@@ -74,7 +74,7 @@ export function ResumeCard({
                 onClick={() => setShowPdfPreview(true)}
                 className="text-sm text-indigo-600 hover:text-indigo-700 font-medium"
               >
-                📄 查看 PDF 原件{resumeFileName ? `（${resumeFileName}）` : ""}
+                查看 PDF 原件{resumeFileName ? `（${resumeFileName}）` : ""}
               </button>
             </div>
           )}
@@ -91,7 +91,7 @@ export function ResumeCard({
               <form action={saveResume}>
                 <input type="hidden" name="candidateId" value={candidateId} />
                 <input type="hidden" name="resumeText" value="" />
-                <button type="submit" className="text-sm text-gray-400 hover:text-red-600">
+                <button type="submit" className="text-sm text-gray-600 hover:text-red-600">
                   删除
                 </button>
               </form>
@@ -151,18 +151,18 @@ function PdfPreviewModal({ pdfUrl, onClose }: { pdfUrl: string; onClose: () => v
       <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
       <div className="relative bg-white rounded-2xl shadow-xl w-full max-w-2xl p-6 max-h-[90vh] overflow-auto" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center justify-between mb-4">
-          <h3 className="font-semibold text-gray-800">📄 PDF 原件预览</h3>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 text-xl">×</button>
+          <h3 className="font-semibold text-gray-800">PDF 原件预览</h3>
+          <button onClick={onClose} aria-label="关闭" className="text-gray-600 hover:text-gray-600 text-xl">×</button>
         </div>
 
-        {loading && <p className="text-center text-gray-400 py-8"><span className="animate-spin mr-2">⏳</span>加载中…</p>}
+        {loading && <p className="text-center text-gray-600 py-8"><span className="animate-spin mr-2">⏳</span>加载中…</p>}
         {error && <p className="text-center text-red-500 py-8">{error}</p>}
 
         {pages.length > 0 && (
           <>
             <div className="flex items-center justify-between mb-3 text-sm">
               <button onClick={() => setCurrentPage(p => Math.max(0, p - 1))} disabled={currentPage === 0} className="px-3 py-1 rounded border border-gray-300 hover:bg-gray-50 disabled:opacity-30">← 上一页</button>
-              <span className="text-gray-500">{currentPage + 1} / {pages.length}</span>
+              <span className="text-gray-600">{currentPage + 1} / {pages.length}</span>
               <button onClick={() => setCurrentPage(p => Math.min(pages.length - 1, p + 1))} disabled={currentPage === pages.length - 1} className="px-3 py-1 rounded border border-gray-300 hover:bg-gray-50 disabled:opacity-30">下一页 →</button>
             </div>
             <div className="bg-gray-100 rounded-lg flex justify-center p-2">

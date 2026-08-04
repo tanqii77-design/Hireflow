@@ -31,7 +31,7 @@ export function StatusAdvanceButton({
           disabled={disabled}
           className={`w-full px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
             disabled
-              ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+              ? "bg-gray-100 text-gray-600 cursor-not-allowed"
               : isReject
               ? "bg-red-50 text-red-700 hover:bg-red-100 border border-red-200"
               : "bg-indigo-600 text-white hover:bg-indigo-700 shadow-sm"
@@ -40,7 +40,7 @@ export function StatusAdvanceButton({
           {label}
         </button>
         {disabled && reason && (
-          <p className="text-xs text-gray-400 mt-1 px-1">{reason}</p>
+          <p className="text-xs text-gray-600 mt-1 px-1">{reason}</p>
         )}
       </div>
     </form>
