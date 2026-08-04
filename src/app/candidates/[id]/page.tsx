@@ -63,7 +63,7 @@ export default async function CandidateDetailPage({
     feedbackList.map((fb: typeof feedback.$inferSelect) => [fb.interviewId, fb as FeedbackData])
   );
 
-  // 状态流程定义
+  // 状态流程定义（"进入面试"已改为自动触发，不显示为按钮）
   const statusFlow: Record<
     string,
     { label: string; next: { label: string; value: string }[] }
@@ -71,7 +71,7 @@ export default async function CandidateDetailPage({
     screening: {
       label: "筛选中",
       next: [
-        { label: "进入面试", value: "interviewing" },
+        // "进入面试"已移除——安排面试时自动触发
         { label: "淘汰", value: "rejected" },
       ],
     },
@@ -101,6 +101,65 @@ export default async function CandidateDetailPage({
     label: candidate.status,
     next: [],
   };
+
+  // ===== 业务规则：计算状态推进的锁定条件 =====
+  const completedInterviews = interviewList.filter(
+    (iv: typeof interviews.$inferSelect) => iv.status === "completed"
+  );
+  const hasCompletedInterview = completedInterviews.length > 0;
+  // 所有已完成的面试是否都已填写反馈
+  const allCompletedHaveFeedback = completedInterviews.every(
+    (iv: typeof interviews.$inferSelect) => feedbackMap.has(iv.id)
+  );
+  const hasAnyInterview = interviewList.length > 0;
+
+  /**
+   * 判断某个目标状态是否需要锁定
+   * 返回 { locked: boolean, reason: string }
+   */
+  function getLock(targetStatus: string): {
+    locked: boolean;
+    reason: string;
+  } {
+    // 发 Offer（passed → offered）：必须至少有一轮完成 + 所有完成面试已填反馈
+    if (targetStatus === "offered") {
+      if (!hasCompletedInterview) {
+        return {
+          locked: true,
+          reason: "请先完成至少一轮面试后再发 Offer",
+        };
+      }
+      if (!allCompletedHaveFeedback) {
+        return {
+          locked: true,
+          reason: "请先为所有已完成的面试填写反馈后再发 Offer",
+        };
+      }
+      return { locked: false, reason: "" };
+    }
+
+    // 淘汰（→ rejected）：如果有面试记录，需要至少一轮已完成+已反馈
+    if (targetStatus === "rejected") {
+      if (hasAnyInterview) {
+        if (!hasCompletedInterview) {
+          return {
+            locked: true,
+            reason: "请先完成至少一轮面试后再淘汰",
+          };
+        }
+        if (!allCompletedHaveFeedback) {
+          return {
+            locked: true,
+            reason: "请先为已完成的面试填写反馈后再淘汰",
+          };
+        }
+      }
+      return { locked: false, reason: "" };
+    }
+
+    // 其他状态（通过、入职、放弃、初筛淘汰）：不设限
+    return { locked: false, reason: "" };
+  }
 
   return (
     <div>
@@ -302,15 +361,20 @@ export default async function CandidateDetailPage({
           <div className="bg-white rounded-xl border border-gray-200 p-5">
             <h3 className="font-semibold text-gray-700 mb-3">推进状态</h3>
             {currentFlow.next.length > 0 ? (
-              <div className="space-y-2">
-                {currentFlow.next.map((n) => (
-                  <StatusAdvanceButton
-                    key={n.value}
-                    candidateId={candidate.id}
-                    status={n.value}
-                    label={n.label}
-                  />
-                ))}
+              <div className="space-y-3">
+                {currentFlow.next.map((n) => {
+                  const lock = getLock(n.value);
+                  return (
+                    <StatusAdvanceButton
+                      key={n.value}
+                      candidateId={candidate.id}
+                      status={n.value}
+                      label={n.label}
+                      disabled={lock.locked}
+                      reason={lock.reason}
+                    />
+                  );
+                })}
               </div>
             ) : (
               <p className="text-sm text-gray-400">已是最终状态</p>
