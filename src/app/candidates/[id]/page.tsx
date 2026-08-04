@@ -354,6 +354,8 @@ export default async function CandidateDetailPage({
             <ResumeCard
               candidateId={candidate.id}
               resumeText={candidate.resumeText ?? null}
+              hasResumeFile={!!(candidate as any).resumeFile}
+              resumeFileName={(candidate as any).resumeFileName ?? null}
             />
           </div>
           <div>

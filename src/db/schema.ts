@@ -2,7 +2,7 @@
  * 数据库 Schema 定义
  * 6 张表：jobs / candidates / interviews / feedback / activity_logs / matches
  */
-import { sqliteTable, text, integer } from "drizzle-orm/sqlite-core";
+import { sqliteTable, text, integer, blob } from "drizzle-orm/sqlite-core";
 import { sql } from "drizzle-orm";
 
 // ===== 职位表 =====
@@ -27,6 +27,8 @@ export const candidates = sqliteTable("candidates", {
     .references(() => jobs.id),             // 应聘职位（外键 → jobs.id）
   source: text("source"),                   // 来源：领英/内推/官网/BOSS直聘...
   resumeText: text("resume_text"),           // ★ 候选人简历文本（用于 AI 匹配）
+  resumeFile: blob("resume_file"),           // PDF 原件二进制
+  resumeFileName: text("resume_file_name"),  // PDF 文件名
   status: text("status").notNull().default("screening"),
   // 状态：screening（筛选中）/ interviewing（面试中）/
   //       passed（通过）/ rejected（淘汰）/

@@ -50,6 +50,8 @@ async function migrate() {
     );
 
     ALTER TABLE candidates ADD COLUMN resume_text TEXT;
+    ALTER TABLE candidates ADD COLUMN resume_file BLOB;
+    ALTER TABLE candidates ADD COLUMN resume_file_name TEXT;
 
     CREATE TABLE IF NOT EXISTS interviews (
       id INTEGER PRIMARY KEY AUTOINCREMENT,

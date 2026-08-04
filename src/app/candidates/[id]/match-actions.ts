@@ -14,10 +14,25 @@ import { evaluateMatch } from "@/lib/llm";
 export async function saveResume(formData: FormData) {
   const candidateId = parseInt(formData.get("candidateId") as string);
   const resumeText = (formData.get("resumeText") as string) || "";
+  const pdfFile = formData.get("pdfFile") as File | null;
 
+  // 构建更新对象
+  const updates: Record<string, unknown> = {
+    resumeText: resumeText.trim(),
+  };
+
+  // 有 PDF 文件 → 读二进制 + 存文件名
+  if (pdfFile && pdfFile instanceof File && pdfFile.size > 0) {
+    const arrayBuffer = await pdfFile.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+    updates.resumeFile = buffer;
+    updates.resumeFileName = pdfFile.name;
+  }
+
+  // 如果传了空的 resumeText 且没有 PDF → 清除简历（删除操作走 resume-card 里的单独逻辑）
   await db
     .update(candidates)
-    .set({ resumeText: resumeText.trim() })
+    .set(updates)
     .where(eq(candidates.id, candidateId));
 
   revalidatePath(`/candidates/${candidateId}`);
