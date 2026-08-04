@@ -138,7 +138,7 @@ export default async function JobsPage({
                       {job.description}
                     </p>
                   ) : (
-                    <p className="text-sm text-gray-500 mt-1 italic">
+                    <p className="text-sm text-gray-600 mt-1 italic">
                       暂无简介
                     </p>
                   )}
