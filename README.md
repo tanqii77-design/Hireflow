@@ -6,7 +6,7 @@ Built for small-to-medium teams who want structured hiring workflows without the
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-**Online Demo**: [hireflow-i0ta-ochre.vercel.app](https://hireflow-i0ta-ochre.vercel.app)
+**Online Demo**: [hireflow-iota-ochre.vercel.app](https://hireflow-iota-ochre.vercel.app)
 
 ---
 
