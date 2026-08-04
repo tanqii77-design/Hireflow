@@ -176,9 +176,7 @@ export default async function CandidateDetailPage({
               <h2 className="font-semibold text-gray-700">
                 📅 面试记录（{interviewList.length}）
               </h2>
-              <div className="w-40">
-                <ScheduleForm candidateId={candidate.id} />
-              </div>
+              <ScheduleForm candidateId={candidate.id} />
             </div>
 
             {interviewList.length === 0 ? (
@@ -190,7 +188,7 @@ export default async function CandidateDetailPage({
               </div>
             ) : (
               /* 时间线 */
-              <div className="relative pl-6 border-l-2 border-gray-100 space-y-4">
+              <div className="relative pl-6 border-l-2 border-indigo-100 space-y-4">
                 {interviewList.map(
                   (iv: typeof interviews.$inferSelect) => {
                     const isCompleted = iv.status === "completed";
@@ -216,27 +214,27 @@ export default async function CandidateDetailPage({
                           }`}
                         >
                           <div className="flex items-center gap-2 flex-wrap">
-                            {/* 轮次 + 类型 */}
-                            <span className="font-semibold text-gray-800">
+                            {/* 轮次 + 类型图标 */}
+                            <span className="font-semibold text-gray-800 text-sm">
                               第{iv.roundNumber}轮 ·{" "}
                               {iv.interviewType === "video"
-                                ? "视频面试"
+                                ? "🎥 视频"
                                 : iv.interviewType === "phone"
-                                ? "电话面试"
-                                : "现场面试"}
+                                ? "📞 电话"
+                                : "🏢 现场"}
                             </span>
 
                             {/* 状态标签 */}
                             <InterviewStatusBadge status={iv.status} />
 
-                            {/* 反馈状态指示 */}
+                            {/* 反馈状态 */}
                             {fb ? (
-                              <span className="text-xs text-green-600">
-                                ✅ 已反馈
+                              <span className="text-xs text-green-600 font-medium">
+                                ✓ 已反馈
                               </span>
                             ) : isCompleted ? (
-                              <span className="text-xs text-amber-600">
-                                ⚠️ 待反馈
+                              <span className="text-xs text-amber-600 font-medium">
+                                ⚠ 待反馈
                               </span>
                             ) : null}
 
@@ -248,22 +246,21 @@ export default async function CandidateDetailPage({
                             />
                           </div>
 
-                          <div className="flex gap-4 mt-1 text-gray-500">
-                            <span>👤 面试官：{iv.interviewer}</span>
-                            {iv.scheduledAt && (
+                          <div className="flex gap-4 mt-1.5 text-gray-500 text-xs">
+                            <span>面试官：{iv.interviewer}</span>
+                            {iv.scheduledAt ? (
                               <span>
-                                🕐{" "}
-                                {new Date(
-                                  iv.scheduledAt
-                                ).toLocaleString("zh-CN", {
-                                  month: "long",
-                                  day: "numeric",
-                                  hour: "2-digit",
-                                  minute: "2-digit",
-                                })}
+                                {new Date(iv.scheduledAt).toLocaleString(
+                                  "zh-CN",
+                                  {
+                                    month: "numeric",
+                                    day: "numeric",
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                  }
+                                )}
                               </span>
-                            )}
-                            {!iv.scheduledAt && (
+                            ) : (
                               <span className="text-gray-400">时间待定</span>
                             )}
                           </div>

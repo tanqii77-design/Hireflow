@@ -1,45 +1,38 @@
 "use client";
 /**
- * 安排面试表单 — Client Component
+ * 安排面试表单 — 弹窗版本
  *
- * 点击「安排面试」→ 展开表单 → 填写 → 提交 → scheduleInterview Server Action
+ * 点击按钮 → 弹出居中模态框 → 填写 → 提交后自动关闭
  */
 import { useState } from "react";
+import { Modal } from "@/components/modal";
 import { scheduleInterview } from "./interview-actions";
 
 export function ScheduleForm({ candidateId }: { candidateId: number }) {
   const [open, setOpen] = useState(false);
 
   return (
-    <div>
-      {!open ? (
-        <button
-          onClick={() => setOpen(true)}
-          className="w-full bg-indigo-600 text-white px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors shadow-sm"
-        >
-          + 安排面试
-        </button>
-      ) : (
+    <>
+      {/* 触发按钮 */}
+      <button
+        onClick={() => setOpen(true)}
+        className="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors shadow-sm"
+      >
+        + 安排面试
+      </button>
+
+      {/* 弹窗 */}
+      <Modal open={open} onClose={() => setOpen(false)} title="安排面试">
         <form
           action={scheduleInterview}
-          className="bg-gray-50 rounded-lg border border-gray-200 p-4 space-y-4"
+          onSubmit={() => setOpen(false)}
+          className="space-y-4"
         >
-          <div className="flex items-center justify-between">
-            <span className="text-sm font-medium text-gray-700">安排新面试</span>
-            <button
-              type="button"
-              onClick={() => setOpen(false)}
-              className="text-gray-400 hover:text-gray-600 text-sm"
-            >
-              取消
-            </button>
-          </div>
-
           <input type="hidden" name="candidateId" value={candidateId} />
 
           {/* 面试官（必填） */}
           <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
               面试官 <span className="text-red-400">*</span>
             </label>
             <input
@@ -54,22 +47,22 @@ export function ScheduleForm({ candidateId }: { candidateId: number }) {
 
           {/* 面试类型 */}
           <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
               面试类型
             </label>
             <select
               name="interviewType"
               className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
             >
-              <option value="video">视频面试</option>
-              <option value="phone">电话面试</option>
-              <option value="onsite">现场面试</option>
+              <option value="video">🎥 视频面试</option>
+              <option value="phone">📞 电话面试</option>
+              <option value="onsite">🏢 现场面试</option>
             </select>
           </div>
 
           {/* 面试时间 */}
           <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
               面试时间
             </label>
             <input
@@ -77,27 +70,27 @@ export function ScheduleForm({ candidateId }: { candidateId: number }) {
               name="scheduledAt"
               className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
             />
-            <p className="text-xs text-gray-400 mt-0.5">选填，不填表示时间待定</p>
+            <p className="text-xs text-gray-400 mt-1">选填，不填表示时间待定</p>
           </div>
 
-          {/* 提交按钮 */}
-          <div className="flex gap-2">
+          {/* 按钮组 */}
+          <div className="flex gap-3 pt-2">
             <button
               type="submit"
-              className="flex-1 bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors"
+              className="flex-1 bg-indigo-600 text-white px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors shadow-sm"
             >
               确认安排
             </button>
             <button
               type="button"
               onClick={() => setOpen(false)}
-              className="px-4 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-100 transition-colors"
+              className="px-4 py-2.5 rounded-lg text-sm text-gray-600 hover:bg-gray-100 transition-colors"
             >
               取消
             </button>
           </div>
         </form>
-      )}
-    </div>
+      </Modal>
+    </>
   );
 }
