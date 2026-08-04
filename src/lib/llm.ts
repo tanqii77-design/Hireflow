@@ -91,8 +91,7 @@ const INTERVIEW_PROMPT = `你是一位资深 HR 面试官。根据职位 JD 和�
 {
   "rating": 1-5,
   "strengths": "候选人的优势、亮点（用适合填入反馈表单的自然语言表述，2-4句话）",
-  "concerns": "需要关注的问题、风险点（用适合填入反馈表单的自然语言表述，2-4句话）",
-  "conclusion": "pass" | "fail" | "pending"
+  "concerns": "需要关注的问题、风险点（用适合填入反馈表单的自然语言表述，2-4句话）"
 }
 
 评分标准：5=强烈推荐 / 4=推荐 / 3=待定 / 2=有顾虑 / 1=不推荐。
@@ -102,7 +101,6 @@ export interface InterviewAssessment {
   rating: number;
   strengths: string;
   concerns: string;
-  conclusion: string;
 }
 
 /**
@@ -154,8 +152,5 @@ export async function assessInterview(
     rating: Math.max(1, Math.min(5, Number(parsed.rating) || 3)),
     strengths: typeof parsed.strengths === "string" ? parsed.strengths : "",
     concerns: typeof parsed.concerns === "string" ? parsed.concerns : "",
-    conclusion: ["pass", "fail", "pending"].includes(parsed.conclusion)
-      ? parsed.conclusion
-      : "pending",
   };
 }

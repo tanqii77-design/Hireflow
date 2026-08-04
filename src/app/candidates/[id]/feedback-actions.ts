@@ -18,7 +18,6 @@ export async function submitFeedback(formData: FormData) {
   const rating = parseInt(formData.get("rating") as string);
   const strengths = (formData.get("strengths") as string) || "";
   const concerns = (formData.get("concerns") as string) || "";
-  const conclusion = (formData.get("conclusion") as string) || "pending";
   const submittedBy = (formData.get("submittedBy") as string) || "";
 
   // 校验必填
@@ -42,7 +41,6 @@ export async function submitFeedback(formData: FormData) {
         rating,
         strengths: strengths.trim(),
         concerns: concerns.trim(),
-        conclusion,
         submittedBy: submittedBy.trim(),
       })
       .where(eq(feedback.id, existing.id));
@@ -53,7 +51,6 @@ export async function submitFeedback(formData: FormData) {
       rating,
       strengths: strengths.trim(),
       concerns: concerns.trim(),
-      conclusion,
       submittedBy: submittedBy.trim(),
     });
   }
@@ -63,7 +60,7 @@ export async function submitFeedback(formData: FormData) {
 
 /**
  * AI 面试评估 — 根据 TXT 面试记录生成反馈草稿
- * 返回 { rating, strengths, concerns, conclusion }，不写入数据库
+ * 返回 { rating, strengths, concerns }，不写入数据库
  */
 export async function aiAssessInterview(interviewId: number, transcript: string) {
   if (!transcript.trim()) {

@@ -15,7 +15,6 @@ interface Props {
     rating: number;
     strengths: string | null;
     concerns: string | null;
-    conclusion: string;
     submittedBy: string | null;
   } | null;
   hasApiKey?: boolean;
@@ -32,7 +31,6 @@ export function FeedbackForm({
   const [rating, setRating] = useState(existing?.rating || 0);
   const [strengths, setStrengths] = useState(existing?.strengths || "");
   const [concerns, setConcerns] = useState(existing?.concerns || "");
-  const [conclusion, setConclusion] = useState(existing?.conclusion || "pending");
 
   // AI 评估状态
   const [txtFile, setTxtFile] = useState<File | null>(null);
@@ -55,7 +53,6 @@ export function FeedbackForm({
       setRating(result.rating);
       setStrengths(result.strengths);
       setConcerns(result.concerns);
-      setConclusion(result.conclusion);
     } catch (e: any) {
       setAiError(e.message || "AI 分析失败");
     } finally {
@@ -95,7 +92,6 @@ export function FeedbackForm({
           <input type="hidden" name="rating" value={rating} />
           <input type="hidden" name="strengths" value={strengths} />
           <input type="hidden" name="concerns" value={concerns} />
-          <input type="hidden" name="conclusion" value={conclusion} />
 
           {/* 🤖 AI 面试评估 */}
           <div className="bg-indigo-50 rounded-lg border border-indigo-200 p-3">
@@ -189,31 +185,6 @@ export function FeedbackForm({
               placeholder="需要关注的问题、风险..."
               className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none"
             />
-          </div>
-
-          {/* 结论 */}
-          <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1">
-              结论 <span className="text-red-400">*</span>
-            </label>
-            <div className="flex gap-3">
-              {[
-                { value: "pass", label: "✅ 通过" },
-                { value: "fail", label: "❌ 不通过" },
-                { value: "pending", label: "⏸ 待定" },
-              ].map((opt) => (
-                <label key={opt.value} className="flex items-center gap-1.5 text-sm cursor-pointer">
-                  <input
-                    type="radio"
-                    name="conclusion_radio"
-                    checked={conclusion === opt.value}
-                    onChange={() => setConclusion(opt.value)}
-                    className="text-indigo-600"
-                  />
-                  {opt.label}
-                </label>
-              ))}
-            </div>
           </div>
 
           {/* 提交人 */}
