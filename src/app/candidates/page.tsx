@@ -6,28 +6,30 @@ import db from "@/db";
 import { candidates, jobs } from "@/db/schema";
 import { desc, eq } from "drizzle-orm";
 import { DeleteButton } from "./delete-button";
+import { Breadcrumb } from "@/components/breadcrumb";
 
 export const dynamic = "force-dynamic";
 
 export default async function CandidatesPage({
   searchParams,
 }: {
-  searchParams: Promise<{ status?: string }>;
+  searchParams: Promise<{ status?: string; jobId?: string }>;
 }) {
-  const { status: filterStatus } = await searchParams;
+  const { status: filterStatus, jobId: filterJobId } = await searchParams;
 
-  // 读取候选人，关联职位名称
-  let query = db.select().from(candidates).orderBy(desc(candidates.createdAt));
-  // 注意：Drizzle 的 SQLite join 在 Server Component 中需要特殊处理
-  // 这里用最简单的方式：先查候选人，再逐个查职位名
-  const allCandidates = await query;
+  const allCandidates = await db
+    .select()
+    .from(candidates)
+    .orderBy(desc(candidates.createdAt));
 
-  // 客户端筛选状态（SQLite 不支持复杂 join，用 JS filter 更简单可靠）
-  const filtered = filterStatus
-    ? allCandidates.filter(
-        (c: typeof candidates.$inferSelect) => c.status === filterStatus
-      )
-    : allCandidates;
+  // JS 筛选：状态 + 职位可叠加
+  const filtered = allCandidates.filter(
+    (c: typeof candidates.$inferSelect) => {
+      if (filterStatus && c.status !== filterStatus) return false;
+      if (filterJobId && c.jobId !== parseInt(filterJobId)) return false;
+      return true;
+    }
+  );
 
   // 批量获取职位名
   const jobIds = [...new Set(allCandidates.map((c: typeof candidates.$inferSelect) => c.jobId))] as number[];
@@ -39,6 +41,10 @@ export default async function CandidatesPage({
 
   return (
     <div>
+      <Breadcrumb
+        items={[{ label: "看板", href: "/" }, { label: "候选人" }]}
+      />
+
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold">👥 候选人管理</h1>
@@ -78,6 +84,42 @@ export default async function CandidatesPage({
             {f.label}
           </Link>
         ))}
+      </div>
+
+      {/* 职位筛选标签 */}
+      <div className="flex gap-2 mb-4 flex-wrap">
+        <Link
+          href={
+            filterStatus
+              ? `/candidates?status=${filterStatus}`
+              : "/candidates"
+          }
+          className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
+            !filterJobId
+              ? "bg-indigo-100 text-indigo-700"
+              : "bg-gray-100 text-gray-500 hover:bg-gray-200"
+          }`}
+        >
+          全部职位
+        </Link>
+        {jobIds.map((jid) => {
+          const params = new URLSearchParams();
+          if (filterStatus) params.set("status", filterStatus);
+          params.set("jobId", String(jid));
+          return (
+            <Link
+              key={jid}
+              href={`/candidates?${params.toString()}`}
+              className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
+                filterJobId === String(jid)
+                  ? "bg-indigo-100 text-indigo-700"
+                  : "bg-gray-100 text-gray-500 hover:bg-gray-200"
+              }`}
+            >
+              {jobMap.get(jid) || `职位#${jid}`}
+            </Link>
+          );
+        })}
       </div>
 
       {/* 空状态 */}

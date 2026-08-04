@@ -75,27 +75,82 @@ export default async function JobDetailPage({
         </div>
       </div>
 
-      {/* 候选人列表（第 4 天后会有数据） */}
+      {/* 候选人列表 */}
       <div className="bg-white rounded-xl border border-gray-200 p-6">
-        <h2 className="font-semibold text-gray-700 mb-4">
-          候选人（{jobCandidates.length}）
-        </h2>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="font-semibold text-gray-700">
+            候选人（{jobCandidates.length}）
+          </h2>
+          <Link
+            href={`/candidates/new`}
+            className="text-sm text-indigo-600 hover:text-indigo-700"
+          >
+            + 添加候选人
+          </Link>
+        </div>
         {jobCandidates.length === 0 ? (
-          <p className="text-sm text-gray-400">
-            暂无候选人，候选人管理功能将在第 4 天实现
-          </p>
+          <div className="text-center py-10 text-gray-400">
+            <p className="text-3xl mb-2">👤</p>
+            <p className="text-sm">该职位暂无候选人</p>
+            <Link
+              href="/candidates/new"
+              className="text-sm text-indigo-600 hover:text-indigo-700 mt-1 inline-block"
+            >
+              添加第一个候选人 →
+            </Link>
+          </div>
         ) : (
-          <ul className="divide-y divide-gray-100">
+          <div className="divide-y divide-gray-50">
             {jobCandidates.map((c: typeof candidates.$inferSelect) => (
-              <li key={c.id} className="py-3">
-                <span className="font-medium text-gray-800">{c.name}</span>
-                <span className="text-sm text-gray-400 ml-3">{c.email}</span>
-                <span className="text-sm text-gray-400 ml-2">
-                  · {c.status}
+              <div
+                key={c.id}
+                className="flex items-center justify-between py-3"
+              >
+                <div>
+                  <Link
+                    href={`/candidates/${c.id}`}
+                    className="font-medium text-gray-800 hover:text-indigo-600 transition-colors"
+                  >
+                    {c.name}
+                  </Link>
+                  <span className="text-sm text-gray-400 ml-2">
+                    {c.source || ""}
+                  </span>
+                </div>
+                <span
+                  className={`px-2 py-0.5 rounded-full text-xs font-medium border ${
+                    c.status === "screening"
+                      ? "bg-amber-50 text-amber-700 border-amber-200"
+                      : c.status === "interviewing"
+                      ? "bg-blue-50 text-blue-700 border-blue-200"
+                      : c.status === "passed"
+                      ? "bg-green-50 text-green-700 border-green-200"
+                      : c.status === "rejected"
+                      ? "bg-red-50 text-red-700 border-red-200"
+                      : c.status === "offered"
+                      ? "bg-purple-50 text-purple-700 border-purple-200"
+                      : c.status === "hired"
+                      ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                      : "bg-gray-100 text-gray-500 border-gray-200"
+                  }`}
+                >
+                  {c.status === "screening"
+                    ? "筛选中"
+                    : c.status === "interviewing"
+                    ? "面试中"
+                    : c.status === "passed"
+                    ? "已通过"
+                    : c.status === "rejected"
+                    ? "已淘汰"
+                    : c.status === "offered"
+                    ? "已发Offer"
+                    : c.status === "hired"
+                    ? "已入职"
+                    : c.status}
                 </span>
-              </li>
+              </div>
             ))}
-          </ul>
+          </div>
         )}
       </div>
     </div>

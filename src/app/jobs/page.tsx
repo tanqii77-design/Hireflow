@@ -6,9 +6,10 @@
  */
 import Link from "next/link";
 import db from "@/db";
-import { jobs } from "@/db/schema";
-import { desc } from "drizzle-orm";
+import { jobs, candidates, interviews, feedback } from "@/db/schema";
+import { desc, eq, and, inArray } from "drizzle-orm";
 import { DeleteButton } from "./delete-button";
+import { Breadcrumb } from "@/components/breadcrumb";
 
 // 告诉 Next.js 这个页面每次请求都重新渲染（不缓存）
 export const dynamic = "force-dynamic";
@@ -17,8 +18,52 @@ export default async function JobsPage() {
   // 直接从数据库读所有职位，按创建时间倒序
   const allJobs = await db.select().from(jobs).orderBy(desc(jobs.createdAt));
 
+  // 批量获取所有候选人和面试数据，计算每个职位的统计
+  const allCandidates = await db.select().from(candidates);
+  const allInterviews = await db.select().from(interviews);
+  const allFeedback = await db.select().from(feedback);
+
+  // 为每个职位计算统计
+  const fedInterviewIds = new Set(
+    allFeedback.map((fb: typeof feedback.$inferSelect) => fb.interviewId)
+  );
+
+  function getJobStats(jobId: number) {
+    const jobCandidates = allCandidates.filter(
+      (c: typeof candidates.$inferSelect) => c.jobId === jobId
+    );
+    const candidateIds = new Set(jobCandidates.map((c: typeof candidates.$inferSelect) => c.id));
+
+    // 该职位下的面试
+    const jobInterviews = allInterviews.filter(
+      (iv: typeof interviews.$inferSelect) => candidateIds.has(iv.candidateId)
+    );
+
+    const interviewing = jobCandidates.filter(
+      (c: typeof candidates.$inferSelect) => c.status === "interviewing"
+    ).length;
+    const hired = jobCandidates.filter(
+      (c: typeof candidates.$inferSelect) => c.status === "hired"
+    ).length;
+
+    // 待反馈：该职位下 completed 但无反馈的面试数
+    const pendingFeedback = jobInterviews.filter(
+      (iv: typeof interviews.$inferSelect) =>
+        iv.status === "completed" && !fedInterviewIds.has(iv.id)
+    ).length;
+
+    return {
+      total: jobCandidates.length,
+      interviewing,
+      pendingFeedback,
+      hired,
+    };
+  }
+
   return (
     <div>
+      <Breadcrumb items={[{ label: "看板", href: "/" }, { label: "职位" }]} />
+
       {/* 页面头部 */}
       <div className="flex items-center justify-between mb-6">
         <div>
@@ -86,8 +131,34 @@ export default async function JobsPage() {
                     </p>
                   )}
 
-                  <p className="text-xs text-gray-400 mt-3">
-                    创建于 {new Date(job.createdAt).toLocaleDateString("zh-CN")}
+                  {/* 关键数据统计 */}
+                  {(() => {
+                    const s = getJobStats(job.id);
+                    return (
+                      <div className="flex gap-3 mt-3 text-xs text-gray-500 flex-wrap">
+                        <span>候选人 {s.total}</span>
+                        {s.interviewing > 0 && (
+                          <span className="text-blue-600">
+                            面试中 {s.interviewing}
+                          </span>
+                        )}
+                        {s.pendingFeedback > 0 && (
+                          <span className="text-red-500">
+                            待反馈 {s.pendingFeedback}
+                          </span>
+                        )}
+                        {s.hired > 0 && (
+                          <span className="text-green-600">
+                            已入职 {s.hired}
+                          </span>
+                        )}
+                      </div>
+                    );
+                  })()}
+
+                  <p className="text-xs text-gray-400 mt-2">
+                    创建于{" "}
+                    {new Date(job.createdAt).toLocaleDateString("zh-CN")}
                   </p>
                 </div>
 
