@@ -202,65 +202,74 @@ export default async function CandidateDetailPage({
         ]}
       />
 
-      {/* 错误提示 */}
       {error && (
-        <div className="bg-red-50 border border-red-200 text-red-700 rounded-lg px-4 py-3 mb-6 text-sm max-w-lg">
+        <div className="bg-red-50 border border-red-200 text-red-700 rounded-lg px-4 py-3 mb-6 text-sm">
           ⚠️ {error}
         </div>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* 左侧：个人信息 + 面试时间线 */}
-        <div className="lg:col-span-2 space-y-6">
-          {/* 个人信息卡片 */}
-          <div className="bg-white rounded-xl border border-gray-200 p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h1 className="text-2xl font-bold">{candidate.name}</h1>
-              <span
-                className={`px-2.5 py-0.5 rounded-full text-xs font-medium border ${
-                  currentFlow.label === "已入职"
-                    ? "bg-emerald-50 text-emerald-700 border-emerald-200"
-                    : currentFlow.label === "已淘汰"
-                    ? "bg-red-50 text-red-700 border-red-200"
-                    : "bg-blue-50 text-blue-700 border-blue-200"
-                }`}
-              >
-                {currentFlow.label}
-              </span>
-            </div>
+      {/* 个人信息卡（紧凑） */}
+      <div className="bg-white rounded-xl border border-gray-200 p-5 mb-6">
+        <div className="flex items-center justify-between mb-3">
+          <h1 className="text-2xl font-bold">{candidate.name}</h1>
+          <span
+            className={`px-2.5 py-0.5 rounded-full text-xs font-medium border ${
+              currentFlow.label === "已入职"
+                ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                : currentFlow.label === "已淘汰"
+                ? "bg-red-50 text-red-700 border-red-200"
+                : "bg-blue-50 text-blue-700 border-blue-200"
+            }`}
+          >
+            {currentFlow.label}
+          </span>
+        </div>
 
-            <div className="grid grid-cols-2 gap-4 text-sm">
-              <div>
-                <span className="text-gray-400">电话</span>
-                <p className="text-gray-700">{candidate.phone || "—"}</p>
-              </div>
-              <div>
-                <span className="text-gray-400">邮箱</span>
-                <p className="text-gray-700">{candidate.email || "—"}</p>
-              </div>
-              <div>
-                <span className="text-gray-400">应聘职位</span>
-                <p className="text-gray-700">
-                  {job ? (
-                    <Link
-                      href={`/jobs/${job.id}`}
-                      className="text-indigo-600 hover:text-indigo-700"
-                    >
-                      {job.title}
-                    </Link>
-                  ) : (
-                    "—"
-                  )}
-                </p>
-              </div>
-              <div>
-                <span className="text-gray-400">来源</span>
-                <p className="text-gray-700">{candidate.source || "—"}</p>
-              </div>
-            </div>
+        <div className="flex items-center gap-6 text-sm text-gray-600 flex-wrap">
+          <span>📞 {candidate.phone || "—"}</span>
+          <span>📧 {candidate.email || "—"}</span>
+          <span>
+            💼{" "}
+            {job ? (
+              <Link href={`/jobs/${job.id}`} className="text-indigo-600 hover:text-indigo-700">
+                {job.title}
+              </Link>
+            ) : "—"}
+          </span>
+          <span>📍 {candidate.source || "—"}</span>
+          <span className="text-gray-400 text-xs ml-auto">
+            创建于 {new Date(candidate.createdAt).toLocaleDateString("zh-CN")}
+          </span>
+        </div>
+      </div>
+
+      {/* 🤖 AI 智能匹配大卡片（横贯页面） */}
+      <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+        <h2 className="font-semibold text-gray-700 mb-4">🤖 AI 智能匹配</h2>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* 左栏：简历 */}
+          <div>
+            <ResumeCard
+              candidateId={candidate.id}
+              resumeText={candidate.resumeText ?? null}
+            />
           </div>
+          {/* 右栏：职位匹配 + 结果 */}
+          <div>
+            <MatchCard
+              candidateId={candidate.id}
+              hasResume={!!(candidate.resumeText?.trim())}
+              openJobs={openJobs}
+              matchRecords={matchRecordsWithTitle}
+            />
+          </div>
+        </div>
+      </div>
 
-          {/* 面试时间线 */}
+      {/* 下方：面试时间线 + 推进状态 */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* 面试时间线 2/3 */}
+        <div className="lg:col-span-2">
           <div className="bg-white rounded-xl border border-gray-200 p-6">
             <div className="flex items-center justify-between mb-4">
               <h2 className="font-semibold text-gray-700">
@@ -272,109 +281,55 @@ export default async function CandidateDetailPage({
             {interviewList.length === 0 ? (
               <div className="text-center py-8 text-gray-400">
                 <p className="text-sm">暂无面试记录</p>
-                <p className="text-xs mt-1">
-                  点击"安排面试"按钮添加第一轮面试
-                </p>
+                <p className="text-xs mt-1">点击&quot;安排面试&quot;按钮添加第一轮面试</p>
               </div>
             ) : (
-              /* 时间线 */
               <div className="relative pl-6 border-l-2 border-indigo-100 space-y-4">
                 {interviewList.map(
                   (iv: typeof interviews.$inferSelect) => {
                     const isCompleted = iv.status === "completed";
                     const isCancelled = iv.status === "cancelled";
-                    const fb: FeedbackData | undefined = feedbackMap.get(iv.id); // 该面试的反馈
+                    const fb: FeedbackData | undefined = feedbackMap.get(iv.id);
 
                     return (
                       <div key={iv.id} className="relative">
-                        {/* 时间线圆点 */}
                         <div
                           className={`absolute -left-[25px] w-3.5 h-3.5 rounded-full border-2 bg-white ${
-                            isCompleted
-                              ? "border-green-500 bg-green-50"
-                              : isCancelled
-                              ? "border-gray-300 bg-gray-100"
-                              : "border-blue-500 bg-blue-50"
+                            isCompleted ? "border-green-500 bg-green-50"
+                            : isCancelled ? "border-gray-300 bg-gray-100"
+                            : "border-blue-500 bg-blue-50"
                           }`}
                         />
-
-                        <div
-                          className={`rounded-lg border p-3 text-sm ${
-                            isCancelled ? "opacity-50 bg-gray-50" : "bg-white"
-                          }`}
-                        >
+                        <div className={`rounded-lg border p-3 text-sm ${isCancelled ? "opacity-50 bg-gray-50" : "bg-white"}`}>
                           <div className="flex items-center gap-2 flex-wrap">
-                            {/* 轮次 + 类型图标 */}
                             <span className="font-semibold text-gray-800 text-sm">
                               第{iv.roundNumber}轮 ·{" "}
-                              {iv.interviewType === "video"
-                                ? "🎥 视频"
-                                : iv.interviewType === "phone"
-                                ? "📞 电话"
-                                : "🏢 现场"}
+                              {iv.interviewType === "video" ? "🎥 视频" : iv.interviewType === "phone" ? "📞 电话" : "🏢 现场"}
                             </span>
-
-                            {/* 状态标签 */}
                             <InterviewStatusBadge status={iv.status} />
-
-                            {/* 反馈状态 */}
                             {fb ? (
-                              <span className="text-xs text-green-600 font-medium">
-                                ✓ 已反馈
-                              </span>
+                              <span className="text-xs text-green-600 font-medium">✓ 已反馈</span>
                             ) : isCompleted ? (
-                              <span className="text-xs text-amber-600 font-medium">
-                                ⚠ 待反馈
-                              </span>
+                              <span className="text-xs text-amber-600 font-medium">⚠ 待反馈</span>
                             ) : null}
-
-                            {/* 操作按钮 */}
-                            <InterviewButtons
-                              interviewId={iv.id}
-                              candidateId={candidate.id}
-                              status={iv.status}
-                            />
+                            <InterviewButtons interviewId={iv.id} candidateId={candidate.id} status={iv.status} />
                           </div>
-
                           <div className="flex gap-4 mt-1.5 text-gray-500 text-xs">
                             <span>面试官：{iv.interviewer}</span>
                             {iv.scheduledAt ? (
-                              <span>
-                                {new Date(iv.scheduledAt).toLocaleString(
-                                  "zh-CN",
-                                  {
-                                    month: "numeric",
-                                    day: "numeric",
-                                    hour: "2-digit",
-                                    minute: "2-digit",
-                                  }
-                                )}
-                              </span>
+                              <span>{new Date(iv.scheduledAt).toLocaleString("zh-CN", { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" })}</span>
                             ) : (
                               <span className="text-gray-400">时间待定</span>
                             )}
                           </div>
-
-                          {/* 反馈区域 */}
                           {fb ? (
-                            /* 有反馈 → 展示摘要 + 编辑入口 */
                             <div>
                               <FeedbackDisplay fb={fb} />
-                              <FeedbackForm
-                                interviewId={iv.id}
-                                candidateId={candidate.id}
-                                interviewer={iv.interviewer}
-                                existing={fb}
-                              />
+                              <FeedbackForm interviewId={iv.id} candidateId={candidate.id} interviewer={iv.interviewer} existing={fb} />
                             </div>
                           ) : isCompleted ? (
-                            /* 已完成但没反馈 → 显示填写入口 */
                             <div className="mt-2">
-                              <FeedbackForm
-                                interviewId={iv.id}
-                                candidateId={candidate.id}
-                                interviewer={iv.interviewer}
-                              />
+                              <FeedbackForm interviewId={iv.id} candidateId={candidate.id} interviewer={iv.interviewer} />
                             </div>
                           ) : null}
                         </div>
@@ -387,83 +342,39 @@ export default async function CandidateDetailPage({
           </div>
         </div>
 
-        {/* 右侧：简历 + AI 匹配 + 状态操作 */}
-        <div className="space-y-4">
-          <ResumeCard
-            candidateId={candidate.id}
-            resumeText={candidate.resumeText ?? null}
-          />
-
-          <MatchCard
-            candidateId={candidate.id}
-            hasResume={!!(candidate.resumeText?.trim())}
-            openJobs={openJobs}
-            matchRecords={matchRecordsWithTitle}
-          />
-
-          <div className="bg-white rounded-xl border border-gray-200 p-5">
-            <h3 className="font-semibold text-gray-700 mb-3">推进状态</h3>
-            {currentFlow.next.length > 0 ? (
-              <div className="space-y-3">
-                {currentFlow.next.map((n) => {
-                  const lock = getLock(n.value);
-                  return (
-                    <StatusAdvanceButton
-                      key={n.value}
-                      candidateId={candidate.id}
-                      status={n.value}
-                      label={n.label}
-                      disabled={lock.locked}
-                      reason={lock.reason}
-                    />
-                  );
-                })}
-              </div>
-            ) : (
-              <p className="text-sm text-gray-400">已是最终状态</p>
-            )}
-          </div>
-
-          <div className="bg-white rounded-xl border border-gray-200 p-5">
-            <h3 className="font-semibold text-gray-700 mb-2">创建时间</h3>
-            <p className="text-sm text-gray-500">
-              {new Date(candidate.createdAt).toLocaleDateString("zh-CN")}
-            </p>
-          </div>
+        {/* 推进状态 1/3 */}
+        <div className="bg-white rounded-xl border border-gray-200 p-5 h-fit">
+          <h3 className="font-semibold text-gray-700 mb-3">推进状态</h3>
+          {currentFlow.next.length > 0 ? (
+            <div className="space-y-3">
+              {currentFlow.next.map((n) => {
+                const lock = getLock(n.value);
+                return (
+                  <StatusAdvanceButton
+                    key={n.value}
+                    candidateId={candidate.id}
+                    status={n.value}
+                    label={n.label}
+                    disabled={lock.locked}
+                    reason={lock.reason}
+                  />
+                );
+              })}
+            </div>
+          ) : (
+            <p className="text-sm text-gray-400">已是最终状态</p>
+          )}
         </div>
       </div>
     </div>
   );
 }
 
-/**
- * 面试状态标签
- */
 function InterviewStatusBadge({ status }: { status: string }) {
   switch (status) {
-    case "scheduled":
-      return (
-        <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700 border border-blue-200">
-          已安排
-        </span>
-      );
-    case "completed":
-      return (
-        <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-green-50 text-green-700 border border-green-200">
-          已完成
-        </span>
-      );
-    case "cancelled":
-      return (
-        <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-500 border border-gray-200">
-          已取消
-        </span>
-      );
-    default:
-      return (
-        <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-500">
-          {status}
-        </span>
-      );
+    case "scheduled": return <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700 border border-blue-200">已安排</span>;
+    case "completed": return <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-green-50 text-green-700 border border-green-200">已完成</span>;
+    case "cancelled": return <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-500 border border-gray-200">已取消</span>;
+    default: return <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-500">{status}</span>;
   }
 }

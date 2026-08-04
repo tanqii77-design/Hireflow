@@ -4,7 +4,7 @@
  */
 import { useState } from "react";
 import { saveResume } from "./match-actions";
-import { PdfUploader } from "@/app/match/pdf-uploader";
+import { PdfUploader } from "@/components/pdf-uploader";
 
 interface Props {
   candidateId: number;
@@ -18,7 +18,7 @@ export function ResumeCard({ candidateId, resumeText }: Props) {
   const hasResume = !!(resumeText && resumeText.trim());
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-5">
+    <div>
       <h3 className="font-semibold text-gray-700 mb-3">📄 简历</h3>
 
       {!hasResume && !editing ? (

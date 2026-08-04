@@ -53,8 +53,8 @@ export function MatchCard({
   }
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-5">
-      <h3 className="font-semibold text-gray-700 mb-3">🤖 AI 匹配</h3>
+    <div>
+      <h3 className="font-semibold text-gray-700 mb-3">💼 职位匹配</h3>
 
       {/* 匹配按钮区 */}
       <div className="mb-4">
