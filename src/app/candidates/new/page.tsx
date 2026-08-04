@@ -1,11 +1,10 @@
 /**
- * 新建候选人页 — Server Component
- * 读取所有开放职位供下拉选择
+ * 新建候选人页 — 两步流程（AI 智能建档 + 手动添加）
  */
 import db from "@/db";
 import { jobs } from "@/db/schema";
 import { eq } from "drizzle-orm";
-import { NewCandidateForm } from "./new-form";
+import { NewCandidateFlow } from "./new-flow";
 
 export default async function NewCandidatePage({
   searchParams,
@@ -13,9 +12,8 @@ export default async function NewCandidatePage({
   searchParams: Promise<{ error?: string }>;
 }) {
   const { error } = await searchParams;
-
-  // 只显示开放中的职位
   const openJobs = await db.select().from(jobs).where(eq(jobs.status, "open"));
+  const hasApiKey = !!process.env.LLM_API_KEY;
 
-  return <NewCandidateForm error={error} jobs={openJobs} />;
+  return <NewCandidateFlow error={error} jobs={openJobs} hasApiKey={hasApiKey} />;
 }

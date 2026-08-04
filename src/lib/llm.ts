@@ -154,3 +154,60 @@ export async function assessInterview(
     concerns: typeof parsed.concerns === "string" ? parsed.concerns : "",
   };
 }
+
+// ===== 简历信息抽取 =====
+
+const EXTRACT_PROMPT = `你是一位 HR 助手。从简历中抽取候选人的基本信息。
+
+返回严格 JSON（不要 markdown、不要解释）：
+{
+  "name": "姓名（如无则空字符串）",
+  "phone": "电话号码（如无则空字符串）",
+  "email": "邮箱地址（如无则空字符串）",
+  "summary": "一句话亮点总结（20字以内，如无则空字符串）"
+}`;
+
+export interface CandidateInfo {
+  name: string;
+  phone: string;
+  email: string;
+  summary: string;
+}
+
+/** 从简历文本中抽取候选人基本信息 */
+export async function extractCandidateInfo(resume: string): Promise<CandidateInfo> {
+  if (!LLM_API_KEY) throw new Error("未配置 LLM_API_KEY");
+
+  const res = await fetch(`${LLM_BASE_URL}/chat/completions`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${LLM_API_KEY}`,
+    },
+    body: JSON.stringify({
+      model: LLM_MODEL,
+      messages: [
+        { role: "system", content: EXTRACT_PROMPT },
+        { role: "user", content: resume },
+      ],
+      temperature: 0.1,
+      max_tokens: 300,
+    }),
+  });
+
+  if (!res.ok) throw new Error(`LLM API 错误 ${res.status}`);
+  const data = await res.json();
+  const content = data.choices?.[0]?.message?.content || "";
+
+  let jsonStr = content.trim();
+  const m = jsonStr.match(/\{[\s\S]*\}/);
+  if (m) jsonStr = m[0];
+
+  const parsed = JSON.parse(jsonStr);
+  return {
+    name: typeof parsed.name === "string" ? parsed.name : "",
+    phone: typeof parsed.phone === "string" ? parsed.phone : "",
+    email: typeof parsed.email === "string" ? parsed.email : "",
+    summary: typeof parsed.summary === "string" ? parsed.summary : "",
+  };
+}
