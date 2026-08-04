@@ -1,23 +1,28 @@
 /**
  * 候选人详情页 — Server Component
  *
- * 展示：个人信息、当前状态、状态推进按钮、面试时间线（第5天完善）
+ * 展示：个人信息、状态推进、面试时间线（已实现）、安排面试表单
  */
 import Link from "next/link";
 import db from "@/db";
 import { candidates, jobs, interviews } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import { eq, asc } from "drizzle-orm";
 import { notFound } from "next/navigation";
 import { StatusAdvanceButton } from "./status-button";
+import { ScheduleForm } from "./schedule-form";
+import { InterviewButtons } from "./interview-buttons";
 
 export const dynamic = "force-dynamic";
 
 export default async function CandidateDetailPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ error?: string }>;
 }) {
   const { id } = await params;
+  const { error } = await searchParams;
   const cid = parseInt(id);
   if (isNaN(cid)) notFound();
 
@@ -28,16 +33,23 @@ export default async function CandidateDetailPage({
   if (!candidate) notFound();
 
   // 查关联职位
-  const [job] = await db.select().from(jobs).where(eq(jobs.id, candidate.jobId));
+  const [job] = await db
+    .select()
+    .from(jobs)
+    .where(eq(jobs.id, candidate.jobId));
 
-  // 查面试记录（第5天后会有数据）
+  // 查面试记录，按轮次排序
   const interviewList = await db
     .select()
     .from(interviews)
-    .where(eq(interviews.candidateId, cid));
+    .where(eq(interviews.candidateId, cid))
+    .orderBy(asc(interviews.roundNumber));
 
   // 状态流程定义
-  const statusFlow: Record<string, { label: string; next: { label: string; value: string }[] }> = {
+  const statusFlow: Record<
+    string,
+    { label: string; next: { label: string; value: string }[] }
+  > = {
     screening: {
       label: "筛选中",
       next: [
@@ -83,9 +95,17 @@ export default async function CandidateDetailPage({
         </Link>
       </div>
 
+      {/* 错误提示 */}
+      {error && (
+        <div className="bg-red-50 border border-red-200 text-red-700 rounded-lg px-4 py-3 mb-6 text-sm max-w-lg">
+          ⚠️ {error}
+        </div>
+      )}
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* 左侧：个人信息 */}
+        {/* 左侧：个人信息 + 面试时间线 */}
         <div className="lg:col-span-2 space-y-6">
+          {/* 个人信息卡片 */}
           <div className="bg-white rounded-xl border border-gray-200 p-6">
             <div className="flex items-center justify-between mb-4">
               <h1 className="text-2xl font-bold">{candidate.name}</h1>
@@ -133,31 +153,96 @@ export default async function CandidateDetailPage({
             </div>
           </div>
 
-          {/* 面试时间线（第5天完善） */}
+          {/* 面试时间线 */}
           <div className="bg-white rounded-xl border border-gray-200 p-6">
-            <h2 className="font-semibold text-gray-700 mb-4">
-              面试记录（{interviewList.length}）
-            </h2>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="font-semibold text-gray-700">
+                📅 面试记录（{interviewList.length}）
+              </h2>
+              <div className="w-40">
+                <ScheduleForm candidateId={candidate.id} />
+              </div>
+            </div>
+
             {interviewList.length === 0 ? (
-              <p className="text-sm text-gray-400">
-                暂无面试记录，面试安排功能将在第 5 天实现
-              </p>
+              <div className="text-center py-8 text-gray-400">
+                <p className="text-sm">暂无面试记录</p>
+                <p className="text-xs mt-1">
+                  点击"安排面试"按钮添加第一轮面试
+                </p>
+              </div>
             ) : (
-              <div className="space-y-3">
-                {interviewList.map((iv: typeof interviews.$inferSelect) => (
-                  <div
-                    key={iv.id}
-                    className="border border-gray-100 rounded-lg p-3 text-sm"
-                  >
-                    <span className="font-medium">
-                      第{iv.roundNumber}轮 · {iv.interviewType}
-                    </span>
-                    <span className="text-gray-400 ml-2">
-                      面试官：{iv.interviewer}
-                    </span>
-                    <span className="text-gray-400 ml-2">· {iv.status}</span>
-                  </div>
-                ))}
+              /* 时间线 */
+              <div className="relative pl-6 border-l-2 border-gray-100 space-y-4">
+                {interviewList.map(
+                  (iv: typeof interviews.$inferSelect) => {
+                    const isCompleted = iv.status === "completed";
+                    const isCancelled = iv.status === "cancelled";
+
+                    return (
+                      <div key={iv.id} className="relative">
+                        {/* 时间线圆点 */}
+                        <div
+                          className={`absolute -left-[25px] w-3.5 h-3.5 rounded-full border-2 bg-white ${
+                            isCompleted
+                              ? "border-green-500 bg-green-50"
+                              : isCancelled
+                              ? "border-gray-300 bg-gray-100"
+                              : "border-blue-500 bg-blue-50"
+                          }`}
+                        />
+
+                        <div
+                          className={`rounded-lg border p-3 text-sm ${
+                            isCancelled ? "opacity-50 bg-gray-50" : "bg-white"
+                          }`}
+                        >
+                          <div className="flex items-center gap-2 flex-wrap">
+                            {/* 轮次 + 类型 */}
+                            <span className="font-semibold text-gray-800">
+                              第{iv.roundNumber}轮 ·{" "}
+                              {iv.interviewType === "video"
+                                ? "视频面试"
+                                : iv.interviewType === "phone"
+                                ? "电话面试"
+                                : "现场面试"}
+                            </span>
+
+                            {/* 状态标签 */}
+                            <InterviewStatusBadge status={iv.status} />
+
+                            {/* 操作按钮（仅 scheduled 状态） */}
+                            <InterviewButtons
+                              interviewId={iv.id}
+                              candidateId={candidate.id}
+                              status={iv.status}
+                            />
+                          </div>
+
+                          <div className="flex gap-4 mt-1 text-gray-500">
+                            <span>👤 面试官：{iv.interviewer}</span>
+                            {iv.scheduledAt && (
+                              <span>
+                                🕐{" "}
+                                {new Date(
+                                  iv.scheduledAt
+                                ).toLocaleString("zh-CN", {
+                                  month: "long",
+                                  day: "numeric",
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                })}
+                              </span>
+                            )}
+                            {!iv.scheduledAt && (
+                              <span className="text-gray-400">时间待定</span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  }
+                )}
               </div>
             )}
           </div>
@@ -184,9 +269,7 @@ export default async function CandidateDetailPage({
           </div>
 
           <div className="bg-white rounded-xl border border-gray-200 p-5">
-            <h3 className="font-semibold text-gray-700 mb-2">
-              创建时间
-            </h3>
+            <h3 className="font-semibold text-gray-700 mb-2">创建时间</h3>
             <p className="text-sm text-gray-500">
               {new Date(candidate.createdAt).toLocaleDateString("zh-CN")}
             </p>
@@ -195,4 +278,36 @@ export default async function CandidateDetailPage({
       </div>
     </div>
   );
+}
+
+/**
+ * 面试状态标签
+ */
+function InterviewStatusBadge({ status }: { status: string }) {
+  switch (status) {
+    case "scheduled":
+      return (
+        <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700 border border-blue-200">
+          已安排
+        </span>
+      );
+    case "completed":
+      return (
+        <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-green-50 text-green-700 border border-green-200">
+          已完成
+        </span>
+      );
+    case "cancelled":
+      return (
+        <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-500 border border-gray-200">
+          已取消
+        </span>
+      );
+    default:
+      return (
+        <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-500">
+          {status}
+        </span>
+      );
+  }
 }
