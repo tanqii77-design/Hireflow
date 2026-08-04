@@ -1,28 +1,43 @@
 /**
  * 数据库连接管理
- * 本地开发用 better-sqlite3（文件数据库）
- * 生产环境用 Turso（通过 libsql/client）
+ *
+ * 根据 DATABASE_URL 的前缀自动选择连接方式：
+ *   libsql://...  → Turso 云数据库（生产环境）
+ *   sqlite:./...  → better-sqlite3 本地文件（开发环境）
+ *
+ * 两种数据库都是 SQLite，只是连接方式不同，
+ * SQL 语法完全兼容，代码不需要任何其他改动。
  */
-import { drizzle } from "drizzle-orm/better-sqlite3";
-import Database from "better-sqlite3";
 import * as schema from "./schema";
 
-// 从 .env.local 读取数据库连接字符串（默认 sqlite:./hireflow.db）
-const dbUrl = process.env.DATABASE_URL || "sqlite:./hireflow.db";
+function createDb() {
+  const dbUrl = process.env.DATABASE_URL || "sqlite:./hireflow.db";
 
-// 提取文件路径（去掉 "sqlite:" 前缀）
-const sqlitePath = dbUrl.replace("sqlite:", "");
+  // ===== Turso 云数据库（生产环境） =====
+  if (dbUrl.startsWith("libsql://")) {
+    const { drizzle } = require("drizzle-orm/libsql");
+    const { createClient } = require("@libsql/client");
 
-// 创建 SQLite 数据库连接
-const sqlite = new Database(sqlitePath);
+    // createClient 需要 url 和 authToken
+    const client = createClient({
+      url: dbUrl,
+      authToken: process.env.TURSO_AUTH_TOKEN,
+    });
 
-// 启用 WAL 模式（Write-Ahead Logging），提高并发写入性能
-sqlite.pragma("journal_mode = WAL");
+    return drizzle(client, { schema });
+  }
 
-// 启用外键约束检查
-sqlite.pragma("foreign_keys = ON");
+  // ===== 本地 SQLite（开发环境） =====
+  const { drizzle } = require("drizzle-orm/better-sqlite3");
+  const Database = require("better-sqlite3");
 
-// 创建 Drizzle ORM 实例，绑定 schema
-export const db = drizzle(sqlite, { schema });
+  const sqlitePath = dbUrl.replace("sqlite:", "");
+  const sqlite = new Database(sqlitePath);
+  sqlite.pragma("journal_mode = WAL");    // 提高写入性能
+  sqlite.pragma("foreign_keys = ON");     // 启用外键约束
 
+  return drizzle(sqlite, { schema });
+}
+
+export const db = createDb();
 export default db;

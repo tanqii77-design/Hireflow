@@ -39,6 +39,7 @@ yarn-error.log*
 *.db
 *.db-journal
 *.db-wal
+*.db-shm
 
 # Drizzle 迁移文件（本地生成，别人通过 drizzle-kit generate 自己生成）
 /drizzle
